@@ -1,0 +1,17 @@
+<div class="stage">
+  <h1>Memory Leak</h1>
+  <div class="game-board">
+    <div
+      *ngFor="let card of cards"
+      class="card"
+      (click)="handleCardClick(card)"
+    >
+      <img [src]="card.backside" alt="Card Image" class="card-icon" />
+      <div class="container">
+        <h4></h4>
+      </div>
+    </div>
+  </div>
+
+</div>
+<router-outlet></router-outlet>

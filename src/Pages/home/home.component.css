@@ -1,0 +1,7 @@
+.homeCard{
+    display:flex;
+    /* Make the container take up the full viewport height */
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
