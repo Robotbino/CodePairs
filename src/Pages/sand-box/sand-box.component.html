@@ -1,0 +1,31 @@
+
+<div class="stage">
+  <h1 style="display: flex; justify-content: flex-start;">Memory Leak</h1>
+  <div class="uiGrid">
+
+    <div class="scoreTrackerCard">
+        
+    </div>
+
+    <div class="game-board">
+      <div
+        *ngFor="let card of cards"
+        (click)="handleCardClick(card)"
+        class="flip-card"
+        [class.flipped]="card.isFlipped">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <!-- Backside of card -->
+            <img [src]="card.backside" alt="Card Back" style="height: 150px; width: 150px">
+          </div>
+          <div class="flip-card-back">
+            <!-- Front side (icon) of card -->
+            <div class="card-icon" [innerHTML]="card.source"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+</div>
+<router-outlet></router-outlet>
