@@ -1,6 +1,6 @@
 
 <div class="stage">
-  <h1 style="display: flex; justify-content: flex-start;">Memory Leak</h1>
+  <h1 class="myTitle">Memory Leak</h1>
   <div class="uiGrid">
 
     <div class="scoreTrackerCard">
@@ -8,12 +8,13 @@
     <br/>
       {{currentPlayer.score}}
     </div>
-    <div class="scoreTrackerCard">
+
+    <div class="attemptsRemainingCard">
       Attempts Remaining
       <br/>
       {{currentPlayer.attemptsRemaining}}
     </div>
-
+    
     <div class="game-board">
       <div
         *ngFor="let card of cards"
@@ -23,7 +24,7 @@
         <div class="flip-card-inner">
           <div class="flip-card-front">
             <!-- Backside of card -->
-            <img [src]="card.backside" alt="Card Back" style="height: 150px; width: 150px">
+            <img [src]="card.backside" alt="Card Back" style="height: 180px; width: 150px">
           </div>
           <div class="flip-card-back">
             <!-- Front side (icon) of card -->

@@ -53,14 +53,14 @@ initialImages: {name: string,backside:string; source:string}[]=[{
 }]
 
 constructor(private sanitizer: DomSanitizer){
-
+  
 }
 
   ngOnInit() {
     this.initializeCards();
     this.showfunctions();
     this.loadplayerStats();
-    this.currentPlayer=this.stats[0];
+    this.currentPlayer = this.stats[0];
   }
 //Cotains card details
 initializeCards(){
@@ -104,17 +104,16 @@ loadplayerStats(){
    // Flip the card
    card.isFlipped = true;
    /*  
-    Add the cards to 
-      a new Object */ 
-   this.flippedCards.push(card);
-
-   console.log(` The number of cards flipped is `+ this.flippedCards.length);
-
-   
-   // Check for matches when we have 2 cards flipped and locks our grid
-  if (this.flippedCards.length === 2) {
-    this.lockBoard = true;
-    setTimeout(() => this.checkForMatch(), 1000);
+      Add the cards to 
+      a new Object 
+   */ 
+  this.flippedCards.push(card);
+  console.log(` The number of cards flipped is `+ this.flippedCards.length);
+  // Checks for macthes when our array attempts remaining before checking matches.
+  if(this.flippedCards.length % 2 == 0) {
+   this.checkForMatch();
+  }else{
+    console.log(`Welcome to Narnia`)
   }
 }
 
@@ -125,26 +124,33 @@ loadplayerStats(){
       console.log('Cards match!');
       this.currentPlayer.matchesMade++;
       this.currentPlayer.score += 10;
+
+      
       if (this.currentPlayer.matchesMade === this.cards.length / 2) {
-        console.log('You win! All matches found!');
+       alert('You win! All matches found!');
         // Update rank based on performance
         this.updatePlayerRank();
       }
   } 
   else {
     console.log('Cards do not match');
-    // No match then the flip cards back
+    // Instead of flipping back immediately:
+  setTimeout(() => {
     firstCard.isFlipped = false;
     secondCard.isFlipped = false;
-    // Now we decrement attempts when they get it wrong
+    this.flippedCards = [];
+    this.lockBoard = false;
     this.currentPlayer.attemptsRemaining--;
+    if(this.currentPlayer.attemptsRemaining == 0) {
+      console.log(`Sorry Champ! No more attempts left :'( `);
+      // Handle game over logic
+      this.gameOver();
+    }
+  }, 1000);
+    // Now we decrement attempts when they get it wrong
    }
 
-   if (this.currentPlayer.attemptsRemaining <= 0) {
-    console.log(`Sorry Champ! No more attempts left :'( `);
-    // Handle game over logic
-    this.gameOver();
-  }
+   
   //if
     // Clear flipped cards array
     this.flippedCards = [];
@@ -171,12 +177,8 @@ loadplayerStats(){
   }
 
   gameOver() {
-    // You can add game over logic here
-    // For example, display a message or restart the game
     alert("Game Over! You've used all your attempts.");
-    
-    // Optional: Reset the game
-    // this.resetGame();
+    this.resetGame();
   }
 
  showfunctions(){
@@ -184,4 +186,19 @@ loadplayerStats(){
     console.log(`Backside URL `+ card.backside);
   })
  }
+
+ resetGame() {
+  // Reset player stats
+  this.currentPlayer.attemptsRemaining = 3;
+  this.currentPlayer.score = 0;
+  this.currentPlayer.matchesMade = 0;
+  
+  // Reset and shuffle cards
+  this.cards.forEach(card => card.isFlipped = false);
+  this.shuffleCards();
+  
+  // Reset game state
+  this.lockBoard = false;
+  this.flippedCards = [];
+}
 }

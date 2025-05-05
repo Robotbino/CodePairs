@@ -1,10 +1,9 @@
 /* Adjust .game-board so it fills its grid cell */
 .game-board {
-  /* remove fixed width */
   width: 100%;
-  /* you can set a max-width if you like */
   max-width: 600px;
-  display: flex;            /* keep your flex-wrap for cards */
+  display: flex;
+  order:2;
   flex-wrap: wrap;
   gap: 8px;
   padding: 16px;
@@ -13,44 +12,60 @@
   justify-content: center;
 }
 
-/* Parent wrapper: now a Grid */
-.uiGrid {
-  display: grid;
-  /* Two areas: score on left, board on right */
-  grid-template-columns: auto 1fr;
-  /* If you want them stacked on small screens: */
-  /* grid-template-columns: 1fr; */
-  /* grid-template-rows: auto 1fr; */
-  gap: 20px;
-  align-items: start;
-  justify-items: stretch;
+*{
+  border:1px solid red;
 }
+
+/* Main container for the game UI */
+.uiGrid {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+}
+
+.scoreTrackerCard {
+  width: 200px;
+  height: 200px;
+  background-color: grey;
+  border-radius: 12px;
+  display: flex;
+  order: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.attemptsRemainingCard {
+  width: 200px;
+  height: 200px;
+  background-color: grey;
+  border-radius: 12px;
+  display: flex;
+  order:3;
+  justify-content: center;
+  align-items: center;
+}
+.attemptsRemainingCard:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
+}
+
+
 .stage {
-  display:flex;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   padding-top: 20px;
   align-items: center;
-
-}
-.scoreTrackerCard{
-  display: flex;
-  order:1;
-  align-self:flex-start;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  width: 200px;
-  background-color: grey;
-  border-radius: 12px;
-  padding-right:12px ;
+  width: 100%;
 }
 
 .scoreTrackerCard:hover {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
 }
+
 .card {
-  /* Set a fixed width */
   padding: 16px;
   border-radius: 8px;
   background-color: white;
@@ -58,7 +73,7 @@
   transition: 0.3s;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center;  
   background-color: transparent;
   width: 200px;
   height: 200px;
@@ -67,6 +82,11 @@
 /* On mouse-over, add a deeper shadow */
 .card:hover {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
+}
+
+.myTitle{
+  display: flex;
+  justify-content: flex-start;
 }
 
 /* Add some padding inside the card container */
@@ -118,6 +138,7 @@
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
+
 /* Position the front and back of the card */
 .flip-card-front, .flip-card-back {
   position: absolute;
