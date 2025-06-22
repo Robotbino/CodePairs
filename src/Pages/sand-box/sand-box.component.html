@@ -1,4 +1,3 @@
-
 <div class="stage">
   <h1 class="myTitle">Memory Leak</h1>
   <div class="uiGrid">
@@ -34,6 +33,11 @@
       </div>
     </div>
 
-</div>
+    <!-- Added reset button for better user experience -->
+    <div class="reset-button-container">
+      <button (click)="resetGame()" class="reset-button">Reset Game</button>
+    </div>
+
+  </div>
 </div>
 <router-outlet></router-outlet>
