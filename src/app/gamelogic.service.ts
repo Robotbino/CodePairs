@@ -51,6 +51,7 @@ export class GamelogicService {
   
   // Reference to the current player's stats
   private currentPlayer!: Stats;
+  private unknownPlayer!: Stats;
   
   // Flag to prevent clicking cards during animations/processing
   private lockBoard = false;
