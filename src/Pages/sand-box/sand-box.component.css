@@ -1,35 +1,87 @@
+/* Adjust .game-board so it fills its grid cell */
 .game-board {
+  width: 640px;
+  height: 640px;
+  position: relative;
   display: flex;
-  background-color: grey;
+  order:2;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 8px;
   padding: 16px;
-  justify-content: center;
+  background-color: rgb(71, 51, 51);
   border-radius: 8px;
-  width: 500px;
-
+  justify-content: center;
+  perspective: 1000px;
 }
 
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* Main container for the game UI */
+.uiGrid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+  height: 100vh;
+  background: #060AB2;
+}
+
+.scoreTrackerCard {
+  width: 200px;
+  height: 200px;
+  background-color: grey;
+  border-radius: 12px;
+  display: flex;
+  order: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.attemptsRemainingCard {
+  width: 200px;
+  height: 200px;
+  background-color: grey;
+  border-radius: 12px;
+  display: flex;
+  order:3;
+  justify-content: center;
+  align-items: center;
+}
+.attemptsRemainingCard:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
+}
+
+
 .stage {
+  display: flex;
   flex-direction: column;
   justify-content: center;
   padding-top: 20px;
   align-items: center;
+  width: 100%;
+}
 
+.scoreTrackerCard:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
 }
 
 .card {
-  width: 200px;
-  /* Set a fixed width */
-  height: 200px;
-  padding: 16px;
+  padding: 10px;
   border-radius: 8px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: 0.3s;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center;  
+  background-color: transparent;
+  width: 200px;
+  height: 200px;
 }
 
 /* On mouse-over, add a deeper shadow */
@@ -37,9 +89,14 @@
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
 }
 
+.myTitle{
+  display: flex;
+  justify-content: flex-start;
+}
+
 /* Add some padding inside the card container */
 .container {
-  padding: 2px 16px;
+  padding: 2px 2px;
 }
 
 .card-icon {
@@ -51,4 +108,68 @@
   height: 150px;
   margin-bottom: 14px;
   object-fit: contain;
+}
+
+/* ------Animate rotation---- */
+
+/* Card container styling */
+.flip-card {
+  background-color: transparent;
+  width: 200px;
+  height: 200px;
+  perspective: 1000px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d; 
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Position the front and back of the card */
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.flip-card-front {
+  background-color: #bbb;
+  color: black;
+}
+
+.flip-card-back {
+  background-color: #2980b9;
+  color: white;
+  transform: rotateY(180deg);
+}
+
+/* Make SVG icons fill the container */
+.card-icon svg {
+  width: 100px;
+  height: 100px;
 }

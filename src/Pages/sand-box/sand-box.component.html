@@ -1,17 +1,43 @@
 <div class="stage">
-  <h1>Memory Leak</h1>
-  <div class="game-board">
-    <div
-      *ngFor="let card of cards"
-      class="card"
-      (click)="handleCardClick(card)"
-    >
-      <img [src]="card.backside" alt="Card Image" class="card-icon" />
-      <div class="container">
-        <h4></h4>
+  <h1 class="myTitle">Memory Leak</h1>
+  <div class="uiGrid">
+
+    <div class="scoreTrackerCard">
+      Score
+    <br/>
+      {{currentPlayer.score}}
+    </div>
+
+    <div class="attemptsRemainingCard">
+      Attempts Remaining
+      <br/>
+      {{currentPlayer.attemptsRemaining}}
+    </div>
+    
+    <div class="game-board">
+      <div
+        *ngFor="let card of cards"
+        (click)="handleCardClick(card)"
+        class="flip-card"
+        [class.flipped]="card.isFlipped">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <!-- Backside of card -->
+            <img [src]="card.backside" alt="Card Back" style="height: 180px; width: 150px">
+          </div>
+          <div class="flip-card-back">
+            <!-- Front side (icon) of card -->
+            <div class="card-icon" [innerHTML]="card.source"></div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
+    <!-- Added reset button for better user experience -->
+    <div class="reset-button-container">
+      <button (click)="resetGame()" class="reset-button">Reset Game</button>
+    </div>
+
+  </div>
 </div>
 <router-outlet></router-outlet>
