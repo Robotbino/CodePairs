@@ -3,13 +3,11 @@
   <div class="uiGrid">
 
     <div class="infoColumn">
-
       <div class="columnCard">
         Score
       <br/>
         {{currentPlayer.score}}
       </div>
-
       <div class="columnCard">
         Attempts Remaining
         <br/>
@@ -18,7 +16,7 @@
     </div>
     
     <div class="game-board">
-      <div
+      <div 
         *ngFor="let card of cards"
         (click)="handleCardClick(card)"
         class="flip-card"
