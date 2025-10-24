@@ -4,11 +4,10 @@
   height: 640px;
   position: relative;
   display: flex;
-  order:2;
   flex-wrap: wrap;
   gap: 8px;
   padding: 16px;
-  background-color: rgb(71, 51, 51);
+  background-color: rgb(200, 69, 69);
   border-radius: 8px;
   justify-content: center;
   perspective: 1000px;
@@ -20,6 +19,10 @@
   box-sizing: border-box;
 }
 
+.infoColumn{
+  display: flex;
+  
+}
 /* Main container for the game UI */
 .uiGrid {
   display: flex;
@@ -28,34 +31,19 @@
   gap: 20px;
   width: 100%;
   height: 100vh;
-  background: #060AB2;
+  background: #747596;
 }
 
-.scoreTrackerCard {
+.columnCard {
+  display: flex;
+  padding: 24px;
   width: 200px;
   height: 200px;
   background-color: grey;
   border-radius: 12px;
-  display: flex;
-  order: 1;
   justify-content: center;
   align-items: center;
 }
-
-.attemptsRemainingCard {
-  width: 200px;
-  height: 200px;
-  background-color: grey;
-  border-radius: 12px;
-  display: flex;
-  order:3;
-  justify-content: center;
-  align-items: center;
-}
-.attemptsRemainingCard:hover {
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
-}
-
 
 .stage {
   display: flex;
@@ -66,7 +54,7 @@
   width: 100%;
 }
 
-.scoreTrackerCard:hover {
+.columnCard:hover {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
 }
 
@@ -92,11 +80,23 @@
 .myTitle{
   display: flex;
   justify-content: flex-start;
+
 }
 
 /* Add some padding inside the card container */
 .container {
   padding: 2px 2px;
+}
+.resetButton{
+  background-color: #1a1c1b; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  border-radius: 24px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
 }
 
 .card-icon {

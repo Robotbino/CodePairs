@@ -2,16 +2,19 @@
   <h1 class="myTitle">Memory Leak</h1>
   <div class="uiGrid">
 
-    <div class="scoreTrackerCard">
-      Score
-    <br/>
-      {{currentPlayer.score}}
-    </div>
+    <div class="infoColumn">
 
-    <div class="attemptsRemainingCard">
-      Attempts Remaining
+      <div class="columnCard">
+        Score
       <br/>
-      {{currentPlayer.attemptsRemaining}}
+        {{currentPlayer.score}}
+      </div>
+
+      <div class="columnCard">
+        Attempts Remaining
+        <br/>
+        {{currentPlayer.attemptsRemaining}}
+      </div>
     </div>
     
     <div class="game-board">
@@ -33,10 +36,9 @@
       </div>
     </div>
 
-    <!-- Added reset button for better user experience -->
-    <div class="reset-button-container">
-      <button (click)="resetGame()" class="reset-button">Reset Game</button>
-    </div>
+    
+      <button class="resetButton" (click)="resetGame()" >Reset Game</button>
+   
 
   </div>
 </div>
