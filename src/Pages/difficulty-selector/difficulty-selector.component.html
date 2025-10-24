@@ -1,20 +1,12 @@
 <section class="mainContainer">
-  <div class="card" style="width: 18rem">
-    <div class="card-body">
-      <h5 class="card-title" style="display: flex; justify-content: center">
-        Select difficulty
+  <div class="card">
+      <h5 class="card-title">
+        Select Difficulty
       </h5>
-      <div
-        style="
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1em;
-        "
-      >
+      <div class="selectionButtons">
         <button
           type="button"
-          class="btn btn-outline-secondary"
+          class="btn btn-outline-secondary btn-selector"
           style="width: 200px"
           (click)="selectDifficulty('easy')"
         >
@@ -22,7 +14,7 @@
         </button>
         <button
           type="button"
-          class="btn btn-outline-secondary"
+          class="btn btn-outline-secondary btn-selector"
           style="width: 200px"
           (click)="selectDifficulty('easy')"
         >
@@ -30,7 +22,7 @@
         </button>
         <button
           type="button"
-          class="btn btn-outline-secondary"
+          class="btn btn-outline-secondary btn-selector"
           style="width: 200px"
           (click)="selectDifficulty('easy')"
         >
@@ -38,7 +30,6 @@
         </button>
       </div>
     </div>
-  </div>
 </section>
 
 <router-outlet></router-outlet>

@@ -5,28 +5,6 @@
     height: 100vh;
 }
 
-.homeCard{
-    display:flex;
-}
-.card-title{
-    margin-top: 1em;
-    margin-bottom: 1em;
-    font-weight: 900;
-    font-size: 2em;
-}
-.card{
-    display: flex;
-    color: white;
-    border: 3px solid #ccc;
-    border-radius: 16px;
-    background-color: #466365;
-    flex-direction: column;
-    align-items: center;
-    justify-content: start;
-    width: 26rem;
-    height: 18rem;
-}
-
 .btn-home{
     margin-top:2em;
     width: 20em;

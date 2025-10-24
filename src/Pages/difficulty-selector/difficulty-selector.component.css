@@ -4,3 +4,17 @@
     justify-content: center;
     align-items: center ;
 }
+
+.btn-selector{
+    font-weight: 900;
+    color: #8FC93A;
+    border: 1px solid #8FC93A;
+    border-radius: 20px;
+}
+
+.selectionButtons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+}
