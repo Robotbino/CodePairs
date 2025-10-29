@@ -13,7 +13,10 @@
 * {
   padding: 0px;
   margin: 0px;
+  border: 1px solid red;
 }
+
+
 
 .infoColumn{
   display: flex;
@@ -140,6 +143,7 @@
   cursor: pointer;
   overflow: hidden;
   margin: 10px;
+  z-index: 2;
   border-radius: 18px;
 }
 
@@ -182,4 +186,3 @@
   color: white;
   transform: rotateY(180deg);
 }
-
