@@ -1,5 +1,7 @@
-<div class="stage">
-  <h1 class="myTitle">Memory Leak</h1>
+
+  <nav class="Nav-Bar">
+    <h1 class="MyTitle">Memory Leak</h1>
+  </nav>
   <div class="uiGrid">
 
     <div class="infoColumn">
@@ -24,7 +26,7 @@
         <div class="flip-card-inner">
           <div class="flip-card-front">
             <!-- Backside of card -->
-            <img [src]="card.backside" alt="Card Back" style="height: 180px; width: 150px">
+            <img [src]="card.backside" alt="Card Back" class="imgCardBack">
           </div>
           <div class="flip-card-back">
             <!-- Front side (icon) of card -->
@@ -39,5 +41,5 @@
    
 
   </div>
-</div>
+
 <router-outlet></router-outlet>
