@@ -11,7 +11,22 @@ This project is a code-themed "concentration" or memory-matching game built with
 - CSS 3D Animations: Cards feature a smooth 3D flip animation using CSS perspective, transform, and transition properties.
 - Game Controls: Includes logic for handling card clicks and a "Reset Game" button.
 
+# 🚀 Getting Started
+Follow these instructions to get a copy of the project up and running on your local machine.
 
+#### Prerequisites
+You only need to have Node.js and the Angular CLI installed on your machine.
+
+# 📁 Project Structure
+src/app/
+├── home/                 # The landing page component
+├── difficulty-selector/  # Difficulty selection screen
+│   ├── difficulty-selector.component.ts
+│   └── ...
+├── sand-box/             # The main game board component
+│   ├── sand-box.component.ts
+│   └── ...
+└── gamelogic.service.ts  # (Inferred) Manages all game state and logic
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.5.
 ## Development server
 To start a local development server, run:
