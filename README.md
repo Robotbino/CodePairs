@@ -3,18 +3,13 @@
 This project is a code-themed "concentration" or memory-matching game built with Angular. It demonstrates core framework concepts including component architecture, state management via services, and routing. Players flip cards to find matching pairs, with their score and remaining attempts tracked by the UI.
 
 
-✨ Features
-Component-Based: Fully built using Angular components for the home screen, difficulty selector, and game board.
-
-Centralized State Management: Core game logic, card state, and player stats are managed in a single GamelogicService.
-
-RxJS Subscriptions: The SandBoxComponent subscribes to Observables (cards$, currentPlayer$, lockBoard$) from the service to update the UI in real-time.
-
-Dynamic UI: Player score and attempts remaining are dynamically rendered.
-
-CSS 3D Animations: Cards feature a smooth 3D flip animation using CSS perspective, transform, and transition properties.
-
-Game Controls: Includes logic for handling card clicks and a "Reset Game" button.
+# ✨ Features
+- Component-Based: Fully built using Angular components for the home screen, difficulty selector, and game board.
+- Centralized State Management: Core game logic, card state, and player stats are managed in a single GamelogicService.
+- RxJS Subscriptions: The SandBoxComponent subscribes to Observables (cards$, currentPlayer$, lockBoard$) from the service to update the UI in real-time.
+- Dynamic UI: Player score and attempts remaining are dynamically rendered.
+- CSS 3D Animations: Cards feature a smooth 3D flip animation using CSS perspective, transform, and transition properties.
+- Game Controls: Includes logic for handling card clicks and a "Reset Game" button.
 
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.5.
