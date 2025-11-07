@@ -52,7 +52,7 @@ src/app/
 ├── sand-box/             # The main game board component
 │   ├── sand-box.component.ts
 │   └── ...
-└── gamelogic.service.ts  # (Inferred) Manages all game state and logic
+└── gamelogic.service.ts  # Manages all game state and logic
 ```
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.5.
