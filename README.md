@@ -1,9 +1,9 @@
-# CodePairs
+# Code Pairs: An Angular Memory Game
+### Debugging your Memory
+This project is a code-themed "concentration" or memory-matching game built with Angular. It demonstrates core framework concepts including component architecture, state management via services, and routing. Players flip cards to find matching pairs, with their score and remaining attempts tracked by the UI.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.5.
-
 ## Development server
-
 To start a local development server, run:
 
 ```bash
