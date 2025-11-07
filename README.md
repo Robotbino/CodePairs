@@ -41,7 +41,9 @@ ng serve --open
 ```
 This will open the application in your default browser at http://localhost:4200/.
 
-# 📁 Project Structure
+#  📁 Project Structure
+
+```
 src/app/
 ├── home/                 # The landing page component
 ├── difficulty-selector/  # Difficulty selection screen
@@ -51,6 +53,8 @@ src/app/
 │   ├── sand-box.component.ts
 │   └── ...
 └── gamelogic.service.ts  # (Inferred) Manages all game state and logic
+```
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.5.
 ## Development server
 To start a local development server, run:
