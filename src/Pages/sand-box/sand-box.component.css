@@ -159,6 +159,7 @@
 
 .flip-card.flipped .flip-card-inner {
   transform: rotateY(180deg);
+  transition: transform 1;
 }
 
 
@@ -185,4 +186,11 @@
   background-color: #8FC93A;
   color: white;
   transform: rotateY(180deg);
+  transition: transform 1s;
+}
+
+.flip-card-front:active,
+.flip-card-back:active {
+  transform: scale(0.97);
+  transition: transform .2s;
 }

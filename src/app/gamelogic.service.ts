@@ -13,77 +13,46 @@ export interface Card {
   source?: SafeHtml;    // The sanitized HTML content for the card's front face (SVG icon)
 }
 
-/**
- * Stats interface - defines the player statistics structure
- */
+
 export interface Stats {
-  score: number;              // Current player score
-  rank: string;               // Player rank (Beginner, Intermediate, etc.)
-  attemptsRemaining: number;  // How many wrong attempts the player has left
-  matchesMade: number;        // How many matches the player has found
+  score: number;             
+  rank: string;               
+  attemptsRemaining: number;  
+  matchesMade: number;       
 }
 
-/**
- * GamelogicService - Handles all game logic for the memory card game
- * 
- * This service manages:
- * - Card creation and shuffling
- * 
- * - Game state (cards flipped, matches, score)
- * 
- * - Player statistics
- * 
- * - Game rules (attempts, matching logic)
- */
 @Injectable({
   providedIn: 'root'
 })
 export class GamelogicService {
-  //Game defaults to easy
+ 
   private selectedDifficulty: string = 'easy';
-  // ===== GAME STATE PROPERTIES =====
-  
-  // Cards array - stores all the game cards
+
   private cards: Card[] = [];
   
-  // Player stats array - typically this would just have one player for now
+
   private stats: Stats[] = [];
-  
-  // Reference to the current player's stats
   private currentPlayer!: Stats;
   private unknownPlayer!: Stats;
-  
-  // Flag to prevent clicking cards during animations/processing
+ 
   private lockBoard = false;
-  
-  // Array to track which cards are currently flipped
+ 
   private flippedCards: Card[] = [];
-  
-  // ===== COMMUNICATION WITH COMPONENT =====
-  // These BehaviorSubjects allow us to notify the component when data changes
-  
-  // Simple explanation of BehaviorSubject:
-  // - It's like a "broadcaster" that sends data to anyone who is listening
-  // - Components can "tune in" to receive updates when data changes
-  // - It also remembers the last value, so new subscribers get the most recent data immediately
-  
-  // Broadcaster for cards data changes
   private cardsSubject = new BehaviorSubject<Card[]>([]);
-  // Broadcaster for stats data changes
+  
   private statsSubject = new BehaviorSubject<Stats[]>([]);
-  // Broadcaster for current player data changes
+  
   private currentPlayerSubject = new BehaviorSubject<Stats | null>(null);
-  // Broadcaster for lockBoard status changes
+  
   private lockBoardSubject = new BehaviorSubject<boolean>(false);
   
-  // Public streams that components can listen to (subscribe to)
+  
   public cards$ = this.cardsSubject.asObservable();
   public stats$ = this.statsSubject.asObservable();
   public currentPlayer$ = this.currentPlayerSubject.asObservable();
   public lockBoard$ = this.lockBoardSubject.asObservable();
 
-  // ===== CARD IMAGES =====
-  // These are the SVG images we'll use for our cards
+
   private initialImages: { name: string, backside: string; source: string }[] = [
     {
       name: `chip`,
@@ -118,55 +87,35 @@ export class GamelogicService {
     }
   ];
  
-  /**
-   * Service constructor - We need the DomSanitizer to safely use SVG content in our cards
-   */
+
   constructor(private sanitizer: DomSanitizer) {}
 
-  /**
-   * Initialize the game state - Call this method when starting the game
-   * 
-   * This method:
-   * 1. Creates the cards
-   * 
-   * 2. Sets up player stats
-   * 
-   * 3. Updates all listeners (components)
-   */
+ 
   setDifficulty(level: string): void {
     this.selectedDifficulty = level;
     console.log('Difficulty set to:', this.selectedDifficulty);
+
   }
 
   initializeGame(): void {
-    // Create all our cards
+  
     this.initializeCards();
 
-    // Create player stats
+   
     this.loadPlayerStats();
     
-    // Set current player to the first player in our stats array
+   
     this.currentPlayer = this.stats[0];
     
-    // Tell any listening components that data has changed
     this.notifyComponents();
   }
 
-  /**
-   * Create all the card objects for our game
-   * 
-   * Each card has:
-   * - A unique id
-   * - A flip state (initially false)
-   * - A backside image
-   * - A matchId (cards with same matchId are a match)
-   * - A source (the SVG content for the front of the card)
-   */
+  
   private initializeCards(): void {
-    // Create our array of cards
-    // We're creating pairs of cards with the same matchId
+    
     this.cards = [
       { 
+        //Chip
         id: 1, 
         isFlipped: false, 
         backside: this.initialImages[0].backside, 
@@ -174,6 +123,7 @@ export class GamelogicService {
         source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[0].source) 
       },
       { 
+        //Memory 
         id: 2, 
         isFlipped: false, 
         backside: this.initialImages[1].backside, 
@@ -181,48 +131,90 @@ export class GamelogicService {
         source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[1].source) 
       },
       { 
+        //Heart 
         id: 3, 
         isFlipped: false, 
         backside: this.initialImages[2].backside, 
-        matchId: 'A', 
+        matchId: 'C', 
         source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[2].source) 
       },
       { 
+        //Controller 
         id: 4, 
         isFlipped: false, 
         backside: this.initialImages[3].backside, 
-        matchId: 'B', 
+        matchId: 'D', 
         source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[3].source) 
       },
       { 
+        //Wand 
         id: 5, 
         isFlipped: false, 
         backside: this.initialImages[4].backside, 
-        matchId: 'B', 
-        source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[3].source) 
+        matchId: 'E', 
+        source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[4].source) 
       },
       { 
+        //Ghoul
         id: 6, 
         isFlipped: false, 
         backside: this.initialImages[5].backside, 
+        matchId: 'F', 
+        source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[5].source) 
+      },{ 
+        //Chip
+        id: 7, 
+        isFlipped: false, 
+        backside: this.initialImages[0].backside, 
+        matchId: 'A', 
+        source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[0].source) 
+      },
+      { 
+        //Memory 
+        id: 8, 
+        isFlipped: false, 
+        backside: this.initialImages[1].backside, 
         matchId: 'B', 
+        source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[1].source) 
+      },
+      { 
+        //Heart 
+        id: 9, 
+        isFlipped: false, 
+        backside: this.initialImages[2].backside, 
+        matchId: 'C', 
+        source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[2].source) 
+      },
+      { 
+        //Controller 
+        id: 10, 
+        isFlipped: false, 
+        backside: this.initialImages[3].backside, 
+        matchId: 'D', 
         source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[3].source) 
+      },
+      { 
+        //Wand 
+        id: 11, 
+        isFlipped: false, 
+        backside: this.initialImages[4].backside, 
+        matchId: 'E', 
+        source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[4].source) 
+      },
+      { 
+        //Ghoul
+        id: 12, 
+        isFlipped: false, 
+        backside: this.initialImages[5].backside, 
+        matchId: 'F', 
+        source: this.sanitizer.bypassSecurityTrustHtml(this.initialImages[5].source) 
       }
     ];
     
-    // Randomize the card positions
     this.shuffleCards();
   }
 
-  /**
-   * Create the player statistics
-   * 
-   * Sets up:
-   * - Initial score (0)
-   * - Starting rank ("Beginner")
-   * - Number of attempts allowed (3)
-   * - Number of matches made (0)
-   */
+
   private loadPlayerStats(): void {
     this.stats = [
       {
@@ -234,156 +226,110 @@ export class GamelogicService {
     ];
   }
 
-  /**
-   * Gets an icon by index from our images array
-   * 
-   * @param index The index of the icon to retrieve
-   * @returns A data URL string representing the SVG icon
-   */
+ 
   getInitialIcon(index: number): string {
-    // Check if the index is valid
+    
     if (index < this.initialImages.length) {
       return `data:image/svg+xml,${encodeURIComponent(this.initialImages[index].source)}`;
     }
     
-    // If the index is invalid, return the first icon as a default
+  
     console.log("Invalid icon index, using default");
     return `data:image/svg+xml,${encodeURIComponent(this.initialImages[0].source)}`;
   }
 
-  /**
-   * Handle when a player clicks on a card
-   * 
-   * This is the main game interaction method that:
-   * 1. Checks if the click is valid
-   * 2. Flips the card if allowed
-   * 3. Checks for matches when 2 cards are flipped
-   * 
-   * @param card The card object that was clicked
-   */
+
   handleCardClick(card: Card): void {
     console.log('Card Clicked', card);
-    
-    // === VALIDATION CHECKS ===
-    // Don't allow clicking if:
-    
-    // 1. This card is already flipped
-    // 2. Two cards are already flipped and being checked
-    // 3. The board is locked during animations
-    // 4. The player has no attempts remaining
+  
     if (card.isFlipped || 
         this.flippedCards.length >= 2 || 
         this.lockBoard || 
         this.currentPlayer.attemptsRemaining <= 0) {
       return;
     }
-    
-    // === FLIP THE CARD ===
-    // Mark this card as flipped
+ 
     card.isFlipped = true;
     
-    // Add this card to our "currently flipped cards" array
+
     this.flippedCards.push(card);
     console.log(`The number of cards flipped is ` + this.flippedCards.length);
     
-    // === CHECK FOR MATCHES ===
-    // When we have 2 cards flipped, check if they match
+
     if (this.flippedCards.length % 2 === 0) {
-      // We have two cards flipped, so check if they match
       this.checkForMatch();
     } else {
       console.log(`First card flipped, waiting for second...`);
     }
     
-    // Let any listening components know that data has changed
     this.notifyComponents();
   }
 
-  /**
-   * Check if the two flipped cards match
-   * 
-   * This method:
-   * 1. Locks the board to prevent further clicks during checking
-   * 2. Determines if the cards match based on matchId
-   * 3. Either keeps cards face up (match) or flips them back (no match)
-   * 4. Updates score and attempts
-   */
   private checkForMatch(): void {
-    // Lock the board to prevent clicking during processing
+
     this.lockBoard = true;
     this.notifyComponents();
     
-    // Get references to the two flipped cards
     const firstCard = this.flippedCards[0];
     const secondCard = this.flippedCards[1];
     
-    // === CHECK IF CARDS MATCH ===
+
     if (firstCard.matchId === secondCard.matchId) {
       console.log('Cards match! 🎉');
       
-      // Update player stats for a successful match
+ 
       this.currentPlayer.matchesMade++;
       this.currentPlayer.score += 10;
       
-      // Check if player has found all matches
+ 
       if (this.currentPlayer.matchesMade === this.cards.length / 2) {
-        // Update rank before showing the win message
+
         this.updatePlayerRank();
-        
-        // Small delay before showing win message
+
         setTimeout(() => {
           alert('You win! All matches found! 🏆');
           this.lockBoard = false;
           this.notifyComponents();
         }, 300);
       } else {
-        // Not all matches found yet, unlock the board
+
         this.lockBoard = false;
       }
     } else {
-      // === CARDS DON'T MATCH ===
+
       console.log('Cards do not match 😞');
       
-      // Wait a moment so player can see both cards before flipping back
+      
       setTimeout(() => {
-        // Flip both cards back
+   
         firstCard.isFlipped = false;
         secondCard.isFlipped = false;
-        
-        // Decrement attempts remaining
+   
         this.currentPlayer.attemptsRemaining--;
         
-        // Check if player is out of attempts
+  
         if (this.currentPlayer.attemptsRemaining === 0) {
           console.log(`Sorry Champ! No more attempts left 😭`);
           this.gameOver();
         }
         
-        // Reset game state for next turn
+  
         this.flippedCards = [];
         this.lockBoard = false;
         
-        // Let components know that data has changed
+        
         this.notifyComponents();
-      }, 1000); // Wait 1 second before flipping cards back
+      }, 1000); 
     }
     
-    // Clear flipped cards array for next turns
+
     this.flippedCards = [];
     
-    // Let components know that data has changed
+
     this.notifyComponents();
   }
 
-  /**
-   * Update the player's rank based on their score
-   * 
-   * Higher scores earn better ranks:
-   * - 50+ points = "Master"
-   * - 30+ points = "Advanced"
-   * - 20+ points = "Intermediate"
-   * - Below 20 = "Beginner" (default)
-   */
+ 
   private updatePlayerRank(): void {
     const score = this.currentPlayer.score;
     
@@ -394,91 +340,55 @@ export class GamelogicService {
     } else if (score >= 20) {
       this.currentPlayer.rank = "Intermediate";
     }
-    // If below 20, keep as "Beginner"
-    
-    // Let components know that data has changed
+
     this.notifyComponents();
   }
 
-  /**
-   * Shuffle the cards to randomize their positions
-   * 
-   * This uses the Fisher-Yates shuffle algorithm:
-   * 1. Start from the last card
-   * 2. Swap it with a random card from the deck
-   * 3. Move to the previous card
-   * 4. Repeat until the entire deck is shuffled
-   */
   private shuffleCards(): void {
-    // Loop through the array backwards
+    /
     for (let i = this.cards.length - 1; i > 0; i--) {
-      // Pick a random position from 0 to i
       const j = Math.floor(Math.random() * (i + 1));
-      
-      // Swap cards at positions i and j
-      // This cool syntax [a, b] = [b, a] swaps two variables without a temp variable
       [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
     }
-    // Let components know that data has changed
+   
     this.notifyComponents();
   }
 
-  /**
-   * Handle game over when player is out of attempts
-   * 
-   * Shows an alert and resets the game
-   */
+  
   private gameOver(): void {
     alert("Game Over! You've used all your attempts.");
     this.resetGame();
   }
 
-  /**
-   * Reset the game to its initial state
-   * 
-   * This:
-   * 1. Resets player stats (attempts, score, matches)
-   * 2. Resets all cards to face-down
-   * 3. Shuffles cards into new positions
-   * 4. Resets game state variables
-   */
+  
   resetGame(): void {
-    // Reset player stats
+   
     this.currentPlayer.attemptsRemaining = 3;
     this.currentPlayer.score = 0;
     this.currentPlayer.matchesMade = 0;
     
-    // Reset all cards to face-down
+   
     this.cards.forEach(card => card.isFlipped = false);
     
-    // Shuffle cards into new positions
+   
     this.shuffleCards();
     
-    // Reset game state
+    
     this.lockBoard = false;
     this.flippedCards = [];
     
-    // Let components know that data has changed
+    
     this.notifyComponents();
   }
 
-  /**
-   * Log card information for debugging purposes
-   * 
-   * Prints the backside URL of each card to the console
-   */
+
   logCardInfo(): void {
     this.cards.forEach(card => {
       console.log(`Backside URL ` + card.backside);
     });
   }
 
-  /**
-   * Notify all listening components that data has changed
-   * 
-   * This method updates all our BehaviorSubjects to emit the latest values
-   * Components that are subscribed will receive these updates automatically
-  **/
+  
   private notifyComponents(): void {
     // Create new arrays with the current data
     // The [...array] syntax creates a fresh copy of the array
@@ -492,21 +402,12 @@ export class GamelogicService {
     this.lockBoardSubject.next(this.lockBoard);
   }
 
-  /**
-   * Get the current cards array
-   * 
-   * @returns A copy of the current cards array
-   */
+  
   getCards(): Card[] {
     // Return a copy of the array, not the original reference
     return [...this.cards];
   }
 
-  /**
-   * Get the current player stats
-   * 
-   * @returns A copy of the current player's stats
-   */
   getCurrentPlayer(): Stats {
     // Return a copy of the object, not the original reference
     return {...this.currentPlayer};
