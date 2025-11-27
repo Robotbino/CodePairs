@@ -16,6 +16,7 @@ interface Stats{
   attemptsRemaining: number;
   matchesMade: number;
 }
+
 @Component({
   selector: 'app-sand-box',
   standalone: false,
@@ -27,19 +28,29 @@ export class SandBoxComponent implements OnInit {
   cards: Card[] = [];
   currentPlayer!: Stats;
   lockBoard = false;
+  //To control grid Dimensions
   gridHeight = 700
   gridWidth = 600;
+  //To control card Dimensions
+  cardWidth = 180;
+  cardHeight = 250;
   constructor(private gameService: GamelogicService) {}
 
   
   ngOnInit() {
     //Start the game
     this.gameService.initializeGame();
+
+    this.gameService.cardDimension$.subscribe(myDimensions=>{
+      this.cardHeight=myDimensions.height;
+      this.cardWidth=myDimensions.width;
+    }
+    )
     this.gameService.gridWidth$.subscribe(mywidth=>{
       this.gridWidth=mywidth;
     })
      this.gameService.gridHeight$.subscribe(myheight=>{
-      this.gridWidth=myheight;
+      this.gridHeight=myheight;
     })
     console.log(this.gridWidth);
     //Subscriber to the cards Observable

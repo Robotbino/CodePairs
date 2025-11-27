@@ -19,7 +19,10 @@ export interface Stats {
   attemptsRemaining: number;  
   matchesMade: number;       
 }
-
+interface cardDimentions{
+  height: number;
+  width: number;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -45,9 +48,13 @@ export class GamelogicService {
   
   private lockBoardSubject = new BehaviorSubject<boolean>(false);
   //Broadcaster
+  
   private gridWidthSubject = new BehaviorSubject<number>(600);
   private gridheightSubject = new BehaviorSubject<number>(700);
-
+  private cardSizeSubject = new BehaviorSubject<number>(120);
+  private cardDimensionSubject= new BehaviorSubject<cardDimentions>({height:250,width:180})
+  public cardDimension$ = this.cardDimensionSubject.asObservable();
+  public cardSize$ = this.cardSizeSubject.asObservable();
   public gridWidth$ = this.gridWidthSubject.asObservable();
   public gridHeight$ = this.gridWidthSubject.asObservable();
   public cards$ = this.cardsSubject.asObservable();
@@ -106,25 +113,31 @@ export class GamelogicService {
   constructor(private sanitizer: DomSanitizer) {}
 
  
-  setGridWidth(difficulty: string){
-    switch(difficulty) {
+  setGridWidth(difficulty: string) {
+  switch(difficulty) {
     case 'easy':
-      this.gridWidthSubject.next(450)  // 2x2 grid
-      this.gridheightSubject.next(500)
+      // 2x2 grid (4 cards)
+      this.gridWidthSubject.next(600);
+      this.gridheightSubject.next(650);
+      this.cardDimensionSubject.next({height: 220, width: 180});
       break;
     case 'medium':
-      this.gridWidthSubject.next(550)// 3x3 grid
-      this.gridheightSubject.next(600)
+      // 4x2 grid (8 cards)
+      this.gridWidthSubject.next(700);
+      this.gridheightSubject.next(550);
+      this.cardDimensionSubject.next({height: 290, width: 150});
       break;
     case 'hard':
-      this.gridWidthSubject.next(750) // 4x4 grid
-      this.gridheightSubject.next(850)
+      // 4x3 grid (12 cards)
+      this.gridWidthSubject.next(650);
+      this.gridheightSubject.next(700);
+      this.cardDimensionSubject.next({height: 180, width: 140});
       break;
     default:
-     this.gridWidthSubject.next(650)
-     this.gridheightSubject.next(700)
+      this.gridWidthSubject.next(550);
+      this.gridheightSubject.next(500);
   }
-  }
+}
 
   setDifficulty(level: string): void {
     this.selectedDifficulty = level;

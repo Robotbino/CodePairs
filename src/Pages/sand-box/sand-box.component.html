@@ -17,12 +17,17 @@
       </div>
     </div>
     
-    <div class="game-board" [style.width.px]="gridWidth" [style.height.px]="gridHeight">
-      <div 
-        *ngFor="let card of cards"
-        (click)="handleCardClick(card)"
-        class="flip-card"
-        [class.flipped]="card.isFlipped">
+  <div class="game-board" 
+        [style.width.px]="gridWidth" 
+        [style.height.px]="gridHeight"
+        [style.--card-width.px]="cardWidth">
+  <div 
+    *ngFor="let card of cards"
+    (click)="handleCardClick(card)"
+    class="flip-card"
+    [class.flipped]="card.isFlipped"
+    [style.width.px]="cardWidth"
+    [style.height.px]="cardHeight">
         <div class="flip-card-inner">
           <div class="flip-card-front">
             <!-- Backside of card -->
