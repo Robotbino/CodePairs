@@ -27,21 +27,26 @@ export class SandBoxComponent implements OnInit {
   cards: Card[] = [];
   currentPlayer!: Stats;
   lockBoard = false;
-
-  
+  gridHeight = 700
+  gridWidth = 600;
   constructor(private gameService: GamelogicService) {}
 
   
   ngOnInit() {
     //Start the game
     this.gameService.initializeGame();
-    
+    this.gameService.gridWidth$.subscribe(mywidth=>{
+      this.gridWidth=mywidth;
+    })
+     this.gameService.gridHeight$.subscribe(myheight=>{
+      this.gridWidth=myheight;
+    })
+    console.log(this.gridWidth);
     //Subscriber to the cards Observable
     this.gameService.cards$.subscribe(updatedCards => {
       this.cards = updatedCards;
     });
-    
-    //Subscriber to the playe Observable
+    //Subscriber to the player Observable
     this.gameService.currentPlayer$.subscribe(updatedPlayer => {
       if (updatedPlayer) {
         this.currentPlayer = updatedPlayer;
@@ -51,7 +56,6 @@ export class SandBoxComponent implements OnInit {
     this.gameService.lockBoard$.subscribe(isLocked => {
       this.lockBoard = isLocked;
     });
-    
     //Some other service stuff
     this.showFunctions();
   }

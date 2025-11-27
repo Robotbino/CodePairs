@@ -17,8 +17,7 @@
       </div>
     </div>
     
-    <div class="game-board">
-     
+    <div class="game-board" [style.width.px]="gridWidth" [style.height.px]="gridHeight">
       <div 
         *ngFor="let card of cards"
         (click)="handleCardClick(card)"
