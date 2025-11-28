@@ -22,7 +22,8 @@
 .infoColumn{
   display: flex;
   flex-direction: column;
-  gap: 5em;
+  justify-content: space-between;
+  gap: 12.5em;
 }
 
 .uiGrid {
