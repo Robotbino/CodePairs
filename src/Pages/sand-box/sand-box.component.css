@@ -1,4 +1,4 @@
-/* Adjust .game-board so it fills its grid cell */
+
 .game-board {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--card-width, 120px), 1fr));
@@ -14,39 +14,44 @@
 * {
   padding: 0px;
   margin: 0px;
-
 }
-
-
-
-.infoColumn{
+.score{
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
-  gap: 12.5em;
+  align-items: center;
+  gap: 10px;
+  margin: 20px;
+  width:800px;
+  padding:  20px 10px;
 }
 
 .uiGrid {
   display: flex;
+  flex-direction: column;
   justify-content: space-evenly;
-  align-items: flex-start;
-  gap: 20px;
+  align-items: center;
+  gap: 10px;
+}
+.StatLabel{
+  display: flex;
+  color: white;
+  font-weight: bolder;
+  text-align: center;
+  font-size: 1.2em;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .columnCard {
   display: flex;
   color: white;
   text-align: center;
-  padding: 24px;
-  width: 200px;
-  height: 200px;
-  background-color: #2a2a2a;
-  border-radius:8px;
-  font-size: large;
   font-weight: bolder;
+  font-size: 2.2em;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   justify-content: center;
-  align-items: start;
+  align-items: center;
 }
 .imgCardBack {
   height: 100%;
@@ -84,28 +89,13 @@
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
 }
 .MyTitle{
-  display: flex;
-  justify-content: center;
-  margin: 12px;
-  border: 3px solid #8FC93A;
+  display: inline-flex;
+  font-size:3em;
   color: #8FC93A;
-  font-weight: 900;
-  padding: 15px 20px;
-  text-align: center;
-  border-radius: 24px;
-  font-size: 16px;
-  height: 50px;
+  font-weight: bolder;
+  text-align: left;
 }
 
-.Nav-Bar{
-  display: flex;
-  font-size: large;
-  font-weight: bolder;
-  text-transform: uppercase;
-  justify-content: center;
-  color: white;
-  height: 80px;
-}
 
 .resetButton{
   display: flex;
@@ -122,16 +112,6 @@
   font-size: 16px;
 }
 
-/* .card-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 8px;
-  width: 80px;
-  height: 30px;
-  margin-bottom: 14px;
-  object-fit: contain;
-} */
 
 .card-icon {
   display: flex;
@@ -152,10 +132,6 @@
 .flip-card {
   display: flex;
   background-color: transparent;
-  /*
-    width: 180px;
-    height: 250px;
-  */
   perspective: 1000px;
   cursor: pointer;
   overflow: hidden;

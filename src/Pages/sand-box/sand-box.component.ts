@@ -52,7 +52,8 @@ export class SandBoxComponent implements OnInit {
      this.gameService.gridHeight$.subscribe(myheight=>{
       this.gridHeight=myheight;
     })
-    console.log(this.gridWidth);
+    console.log("This is the width"+this.gridWidth);
+    console.log("This is the height"+this.gridHeight);
     //Subscriber to the cards Observable
     this.gameService.cards$.subscribe(updatedCards => {
       this.cards = updatedCards;

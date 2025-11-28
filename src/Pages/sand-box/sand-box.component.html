@@ -1,51 +1,44 @@
-
-  <nav class="Nav-Bar">
-    <h1 class="MyTitle"> <i class="fa-solid fa-brain"></i>Memory Leak </h1>
-  </nav>
-  <div class="uiGrid">
-
-    <div class="infoColumn">
-      <div class="columnCard">
-        Score
-      <br/>
-        {{currentPlayer.score}}
-      </div>
-      <div class="columnCard">
-        Attempts Remaining
-        <br/>
-        {{currentPlayer.attemptsRemaining}}
-      </div>
-    </div>
-    
-  <div class="game-board" 
-        [style.width.px]="gridWidth" 
-        [style.height.px]="gridHeight"
-        [style.--card-width.px]="cardWidth">
-  <div 
-    *ngFor="let card of cards"
-    (click)="handleCardClick(card)"
-    class="flip-card"
-    [class.flipped]="card.isFlipped"
-    [style.width.px]="cardWidth"
-    [style.height.px]="cardHeight">
-        <div class="flip-card-inner">
-          <div class="flip-card-front">
-            <!-- Backside of card -->
-            <img [src]="card.backside" alt="Card Back" class="imgCardBack">
-          </div>
-          <div class="flip-card-back">
-            <!-- Front side (icon) of card -->
-            <div class="card-icon" [innerHTML]="card.source"></div>
-          </div>
+<div class="uiGrid">
+  <div class="score">
+    <h1 class="MyTitle">Memory Leak </h1>
+    <div style="display:flex; gap:10px; width:350px; justify-content: space-around;">
+      <div>
+        <div class="StatLabel">
+          Score
+        </div>
+        <div class="columnCard">
+          {{currentPlayer.score}}
         </div>
       </div>
-   
+      <div>
+        <div class="StatLabel">
+          Attempts Remaining
+        </div>
+        <div class="columnCard">
+          {{currentPlayer.attemptsRemaining}}
+        </div>
+      </div>
     </div>
+  </div>
 
-    
-      <button class="resetButton" (click)="resetGame()" >Reset Game</button>
-   
+  <div class="game-board" [style.width.px]="gridWidth" [style.height.px]="gridHeight"
+    [style.--card-width.px]="cardWidth">
+    <div *ngFor="let card of cards" (click)="handleCardClick(card)" class="flip-card" [class.flipped]="card.isFlipped"
+      [style.width.px]="cardWidth" [style.height.px]="cardHeight">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <!-- Backside of card -->
+          <img [src]="card.backside" alt="Card Back" class="imgCardBack">
+        </div>
+        <div class="flip-card-back">
+          <!-- Front side (icon) of card -->
+          <div class="card-icon" [innerHTML]="card.source"></div>
+        </div>
+      </div>
+    </div>
 
   </div>
 
-<router-outlet></router-outlet>
+  <button class="resetButton" (click)="resetGame()">Reset Game</button>
+
+  <router-outlet></router-outlet>

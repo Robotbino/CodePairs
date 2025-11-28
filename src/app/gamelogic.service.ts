@@ -119,13 +119,13 @@ export class GamelogicService {
       // 2x2 grid (4 cards)
       this.gridWidthSubject.next(600);
       this.gridheightSubject.next(650);
-      this.cardDimensionSubject.next({height: 220, width: 180});
+      this.cardDimensionSubject.next({height: 260, width: 180});
       break;
     case 'medium':
       // 4x2 grid (8 cards)
-      this.gridWidthSubject.next(700);
+      this.gridWidthSubject.next(850);
       this.gridheightSubject.next(550);
-      this.cardDimensionSubject.next({height: 290, width: 150});
+      this.cardDimensionSubject.next({height: 290, width: 180});
       break;
     case 'hard':
       // 4x3 grid (12 cards)
