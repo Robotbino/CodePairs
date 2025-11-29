@@ -3,7 +3,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--card-width, 120px), 1fr));
   gap: 16px;
-  padding: 20px;
+  padding: 10px;
   background-color: #333333;
   border-radius: 18px;
   perspective: 1000px;
@@ -21,9 +21,8 @@
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  margin: 20px;
   width:800px;
-  padding:  20px 10px;
+  padding:  10px 10px;
 }
 
 .uiGrid {
@@ -49,7 +48,6 @@
   text-align: center;
   font-weight: bolder;
   font-size: 2.2em;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   justify-content: center;
   align-items: center;
 }
@@ -67,9 +65,6 @@
   align-items: center;
 }
 
-.columnCard:hover {
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
-}
 
 .card {
   padding: 5px;
@@ -93,6 +88,7 @@
   font-size:3em;
   color: #8FC93A;
   font-weight: bolder;
+  margin-left: 1.3em;
   text-align: left;
 }
 

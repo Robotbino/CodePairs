@@ -56,7 +56,7 @@ export class GamelogicService {
   public cardDimension$ = this.cardDimensionSubject.asObservable();
   public cardSize$ = this.cardSizeSubject.asObservable();
   public gridWidth$ = this.gridWidthSubject.asObservable();
-  public gridHeight$ = this.gridWidthSubject.asObservable();
+  public gridHeight$ = this.gridheightSubject.asObservable();
   public cards$ = this.cardsSubject.asObservable();
   public stats$ = this.statsSubject.asObservable();
   public currentPlayer$ = this.currentPlayerSubject.asObservable();
@@ -117,24 +117,24 @@ export class GamelogicService {
   switch(difficulty) {
     case 'easy':
       // 2x2 grid (4 cards)
-      this.gridWidthSubject.next(600);
-      this.gridheightSubject.next(650);
-      this.cardDimensionSubject.next({height: 260, width: 180});
+      this.gridWidthSubject.next(550);
+      this.gridheightSubject.next(490);
+      this.cardDimensionSubject.next({height: 210, width: 190});
       break;
     case 'medium':
       // 4x2 grid (8 cards)
-      this.gridWidthSubject.next(850);
-      this.gridheightSubject.next(550);
-      this.cardDimensionSubject.next({height: 290, width: 180});
+      this.gridWidthSubject.next(650);
+      this.gridheightSubject.next(510);
+      this.cardDimensionSubject.next({height: 220, width: 130});
       break;
     case 'hard':
       // 4x3 grid (12 cards)
-      this.gridWidthSubject.next(650);
-      this.gridheightSubject.next(700);
-      this.cardDimensionSubject.next({height: 180, width: 140});
+      this.gridWidthSubject.next(580);
+      this.gridheightSubject.next(550);
+      this.cardDimensionSubject.next({height: 150, width: 120});
       break;
     default:
-      this.gridWidthSubject.next(550);
+      this.gridWidthSubject.next(580);
       this.gridheightSubject.next(500);
   }
 }
