@@ -49,14 +49,16 @@ export class GamelogicService {
   private lockBoardSubject = new BehaviorSubject<boolean>(false);
   //Broadcaster
   
-  private gridWidthSubject = new BehaviorSubject<number>(600);
+  private gridWidthSubject = new BehaviorSubject<number>(450);
   private gridheightSubject = new BehaviorSubject<number>(700);
+  private gridColsSubject = new BehaviorSubject<number>(2);
   private cardSizeSubject = new BehaviorSubject<number>(120);
   private cardDimensionSubject= new BehaviorSubject<cardDimentions>({height:250,width:180})
   public cardDimension$ = this.cardDimensionSubject.asObservable();
   public cardSize$ = this.cardSizeSubject.asObservable();
   public gridWidth$ = this.gridWidthSubject.asObservable();
   public gridHeight$ = this.gridheightSubject.asObservable();
+  public gridCols$ = this.gridColsSubject.asObservable();
   public cards$ = this.cardsSubject.asObservable();
   public stats$ = this.statsSubject.asObservable();
   public currentPlayer$ = this.currentPlayerSubject.asObservable();
@@ -116,26 +118,23 @@ export class GamelogicService {
   setGridWidth(difficulty: string) {
   switch(difficulty) {
     case 'easy':
-      // 2x2 grid (4 cards)
-      this.gridWidthSubject.next(550);
-      this.gridheightSubject.next(490);
-      this.cardDimensionSubject.next({height: 210, width: 190});
+      // 2x2 grid (4 cards) — 2 columns, narrow board
+      this.gridWidthSubject.next(450);
+      this.gridColsSubject.next(2);
       break;
     case 'medium':
-      // 4x2 grid (8 cards)
-      this.gridWidthSubject.next(650);
-      this.gridheightSubject.next(510);
-      this.cardDimensionSubject.next({height: 220, width: 130});
+      // 4x2 grid (8 cards) — 4 columns, wider board
+      this.gridWidthSubject.next(660);
+      this.gridColsSubject.next(4);
       break;
     case 'hard':
-      // 4x3 grid (12 cards)
-      this.gridWidthSubject.next(580);
-      this.gridheightSubject.next(550);
-      this.cardDimensionSubject.next({height: 150, width: 120});
+      // 4x3 grid (12 cards) — 4 columns, same width, more rows
+      this.gridWidthSubject.next(660);
+      this.gridColsSubject.next(4);
       break;
     default:
-      this.gridWidthSubject.next(580);
-      this.gridheightSubject.next(500);
+      this.gridWidthSubject.next(450);
+      this.gridColsSubject.next(2);
   }
 }
 

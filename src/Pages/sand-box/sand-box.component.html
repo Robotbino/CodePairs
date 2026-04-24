@@ -1,44 +1,37 @@
-<div class="uiGrid">
-  <div class="score">
-    <h1 class="MyTitle">Memory Leak </h1>
-    <div style="display:flex; gap:10px; width:350px; justify-content: space-around;">
-      <div>
-        <div class="StatLabel">
-          Score
-        </div>
-        <div class="columnCard">
-          {{currentPlayer.score}}
-        </div>
-      </div>
-      <div>
-        <div class="StatLabel">
-          Attempts Remaining
-        </div>
-        <div class="columnCard">
-          {{currentPlayer.attemptsRemaining}}
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="sandbox-layout">
+  <div class="game-container" [style.width.px]="gridWidth">
 
-  <div class="game-board" [style.width.px]="gridWidth" [style.height.px]="gridHeight"
-    [style.--card-width.px]="cardWidth">
-    <div *ngFor="let card of cards" (click)="handleCardClick(card)" class="flip-card" [class.flipped]="card.isFlipped"
-      [style.width.px]="cardWidth" [style.height.px]="cardHeight">
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <!-- Backside of card -->
-          <img [src]="card.backside" alt="Card Back" class="imgCardBack">
+    <header class="game-header">
+      <h1 class="game-title">Memory<br>Leak</h1>
+      <div class="game-stats">
+        <div class="stat">
+          <span class="stat-label">Score</span>
+          <span class="stat-value">{{currentPlayer.score}}</span>
         </div>
-        <div class="flip-card-back">
-          <!-- Front side (icon) of card -->
-          <div class="card-icon" [innerHTML]="card.source"></div>
+        <div class="stat">
+          <span class="stat-label">Lives</span>
+          <span class="stat-value">{{currentPlayer.attemptsRemaining}}</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="game-board" [style.--grid-cols]="gridCols">
+      <div *ngFor="let card of cards" (click)="handleCardClick(card)" class="flip-card" [class.flipped]="card.isFlipped">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img [src]="card.backside" alt="Card Back" class="imgCardBack">
+          </div>
+          <div class="flip-card-back">
+            <div class="card-icon" [innerHTML]="card.source"></div>
+          </div>
         </div>
       </div>
     </div>
 
+    <footer class="game-footer">
+      <button class="resetButton" (click)="resetGame()">Reset Game</button>
+    </footer>
+
   </div>
-
-  <button class="resetButton" (click)="resetGame()">Reset Game</button>
-
-  <router-outlet></router-outlet>
+</div>
+<router-outlet></router-outlet>

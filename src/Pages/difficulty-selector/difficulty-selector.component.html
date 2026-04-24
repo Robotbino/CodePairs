@@ -1,35 +1,22 @@
 <section class="mainContainer">
-  <div class="card">
-      <h5 class="card-title">
-        Select Difficulty
-      </h5>
-      <div class="selectionButtons">
-        <button
-          type="button"
-          class="btn btn-outline-secondary btn-selector"
-          style="width: 200px"
-          (click)="selectDifficulty('easy')"
-        >
-          Easy
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-secondary btn-selector"
-          style="width: 200px"
-          (click)="selectDifficulty('medium')"
-        >
-          Medium
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-secondary btn-selector"
-          style="width: 200px"
-          (click)="selectDifficulty('hard')"
-        >
-          Hard
-        </button>
-      </div>
+  <div class="difficulty-panel">
+    <p class="difficulty-eyebrow">Choose Mode</p>
+    <h1 class="difficulty-title">Difficulty</h1>
+    <div class="selectionButtons">
+      <button type="button" class="btn-selector" (click)="selectDifficulty('easy')">
+        <span class="btn-label">Easy</span>
+        <span class="btn-meta">2 × 2</span>
+      </button>
+      <button type="button" class="btn-selector" (click)="selectDifficulty('medium')">
+        <span class="btn-label">Medium</span>
+        <span class="btn-meta">4 × 2</span>
+      </button>
+      <button type="button" class="btn-selector" (click)="selectDifficulty('hard')">
+        <span class="btn-label">Hard</span>
+        <span class="btn-meta">4 × 3</span>
+      </button>
     </div>
+  </div>
 </section>
 
 <router-outlet></router-outlet>

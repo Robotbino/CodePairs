@@ -28,32 +28,23 @@ export class SandBoxComponent implements OnInit {
   cards: Card[] = [];
   currentPlayer!: Stats;
   lockBoard = false;
-  //To control grid Dimensions
-  gridHeight = 700
-  gridWidth = 600;
-  //To control card Dimensions
-  cardWidth = 180;
-  cardHeight = 250;
+  gridWidth = 450;
+  gridCols = 2;
+
   constructor(private gameService: GamelogicService) {}
 
-  
+
   ngOnInit() {
     //Start the game
     this.gameService.initializeGame();
 
-    this.gameService.cardDimension$.subscribe(myDimensions=>{
-      this.cardHeight=myDimensions.height;
-      this.cardWidth=myDimensions.width;
-    }
-    )
-    this.gameService.gridWidth$.subscribe(mywidth=>{
-      this.gridWidth=mywidth;
-    })
-     this.gameService.gridHeight$.subscribe(myheight=>{
-      this.gridHeight=myheight;
-    })
-    console.log("This is the width"+this.gridWidth);
-    console.log("This is the height"+this.gridHeight);
+    this.gameService.gridWidth$.subscribe(mywidth => {
+      this.gridWidth = mywidth;
+    });
+
+    this.gameService.gridCols$.subscribe(cols => {
+      this.gridCols = cols;
+    });
     //Subscriber to the cards Observable
     this.gameService.cards$.subscribe(updatedCards => {
       this.cards = updatedCards;
