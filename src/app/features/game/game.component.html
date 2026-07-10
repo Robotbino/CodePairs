@@ -1,5 +1,9 @@
 <div class="stage">
-  <section class="board-shell" [style.--cols]="game.cols()">
+  <section
+    class="board-shell"
+    [style.--cols]="game.cols()"
+    [style.--rows]="rows()"
+  >
     <cp-hud
       [score]="game.score()"
       [elapsedMs]="game.elapsedMs()"

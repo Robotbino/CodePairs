@@ -18,16 +18,38 @@
   position: absolute;
   top: var(--cp-space-4);
   left: var(--cp-space-4);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--cp-muted);
+  color: var(--cp-white);
   text-decoration: none;
+  background: var(--cp-surface-2);
+  border: 3px solid var(--cp-line-soft);
+  box-shadow: var(--cp-shadow-sm);
+  transition: transform var(--cp-t-fast), box-shadow var(--cp-t-fast),
+    border-color var(--cp-t-fast), color var(--cp-t-fast);
 
   &:hover {
     color: var(--cp-accent);
+    border-color: var(--cp-accent);
+    transform: translate(-3px, -3px);
+    box-shadow: 6px 6px 0 var(--cp-accent);
   }
+
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--cp-accent);
+  }
+}
+
+.picker__back-arrow {
+  font-size: 1.1em;
+  line-height: 1;
 }
 
 .picker__title {

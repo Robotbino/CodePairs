@@ -27,6 +27,10 @@ export class GameComponent implements OnInit {
 
   protected readonly summary = this.game.summary;
   protected readonly isOver = computed(() => this.game.phase() !== 'playing');
+  /** Row count of the current grid — drives the height-aware card sizing. */
+  protected readonly rows = computed(() =>
+    Math.ceil(this.game.cards().length / this.game.cols()),
+  );
   private readonly wrongSet = computed(() => new Set(this.game.wrongIds()));
 
   ngOnInit(): void {

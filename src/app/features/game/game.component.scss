@@ -10,8 +10,8 @@
 
 .board-shell {
   position: relative;
-  width: 100%;
-  max-width: 560px;
+  width: fit-content;
+  max-width: min(520px, 92vw);
   border: var(--cp-border-accent);
   box-shadow: var(--cp-shadow-lg);
   background: var(--cp-ground);
@@ -19,9 +19,26 @@
 }
 
 .board {
+  --gap: 10px;
+  // Vertical space the grid can't use: stage padding (40) + shell border (6) +
+  // HUD (~69) + footer (~77) + board padding (28), plus a little safety margin.
+  --chrome: 226px;
+  // Card size is the smaller of what fits by width and what fits by height,
+  // so the whole shell stays inside the viewport at 100% zoom.
+  --card-w: calc(
+    (min(520px, 92vw) - 2 * var(--cp-space-3) - (var(--cols, 4) - 1) * var(--gap)) /
+      var(--cols, 4)
+  );
+  --card-h: calc(
+    (100vh - var(--chrome) - (var(--rows, 3) - 1) * var(--gap)) / var(--rows, 3)
+  );
+  --card: min(var(--card-w), var(--card-h));
+
   display: grid;
-  grid-template-columns: repeat(var(--cols, 4), 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(var(--cols, 4), var(--card));
+  grid-auto-rows: var(--card);
+  justify-content: center;
+  gap: var(--gap);
   padding: var(--cp-space-3);
   background-color: var(--cp-surface);
   transition: opacity var(--cp-t-fast);
