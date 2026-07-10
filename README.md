@@ -1,5 +1,8 @@
 # Code Pairs: An Angular Memory Game
 ## Debugging your Memory
+
+🎮 **[Play the live demo](https://codepairsgame.netlify.app/)**
+
 This project is a code-themed "concentration" or memory-matching game built with Angular. It demonstrates core framework concepts including component architecture, state management via services, and routing. Players flip cards to find matching pairs, with their score and remaining attempts tracked by the UI.
 
 
@@ -25,7 +28,7 @@ Installation & Running
 Clone the repository:
 
 ```Bash
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/Robotbino/CodePairs.git
 ```
 Navigate to the project directory:
 ```Bash
