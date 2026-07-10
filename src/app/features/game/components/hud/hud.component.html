@@ -1,0 +1,31 @@
+<div class="hud">
+  <div class="hud__stat">
+    <span class="hud__label">Score</span>
+    <span class="hud__value hud__value--score">{{ score() }}</span>
+  </div>
+
+  <div class="hud__stat">
+    <span class="hud__label">Time</span>
+    <span class="hud__value hud__value--time">{{ time() }}</span>
+  </div>
+
+  <div class="hud__stat">
+    <span class="hud__label">Lives</span>
+    <span class="hud__pips" [attr.aria-label]="lives() + ' lives left'">
+      @for (alive of livesArray(); track $index) {
+        <span class="hud__pip" [class.hud__pip--out]="!alive"></span>
+      }
+    </span>
+  </div>
+
+  <div class="hud__stat hud__stat--combo" [class.is-hot]="showCombo()">
+    <span class="hud__label">Combo</span>
+    @if (showCombo()) {
+      <span class="hud__value hud__value--combo">
+        {{ multiplier() }}× <small>×{{ combo() }}</small>
+      </span>
+    } @else {
+      <span class="hud__value hud__value--idle">—</span>
+    }
+  </div>
+</div>

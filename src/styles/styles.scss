@@ -1,0 +1,87 @@
+@use "tokens";
+
+// ── Global reset ──────────────────────────────────────────────────────────
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--cp-ground);
+  color: var(--cp-white);
+  font-family: var(--cp-font);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+// Faint scanline texture on the page ground for a "terminal" brutalist feel.
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(255, 255, 255, 0.012) 3px,
+    rgba(255, 255, 255, 0.012) 4px
+  );
+}
+
+// Shared brutalist button used across feature screens.
+.cp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cp-space-2);
+  padding: 16px 28px;
+  border: 3px solid var(--cp-white);
+  border-radius: 0;
+  background: transparent;
+  color: var(--cp-white);
+  font-weight: 900;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: var(--cp-shadow-sm);
+  transition: transform var(--cp-t-fast), box-shadow var(--cp-t-fast),
+    background-color var(--cp-t-fast), color var(--cp-t-fast);
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 var(--cp-accent);
+  }
+
+  &:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+
+  &--accent {
+    border-color: var(--cp-accent);
+    background: var(--cp-accent);
+    color: var(--cp-accent-ink);
+    box-shadow: 6px 6px 0 var(--cp-ground-deep);
+
+    &:hover {
+      box-shadow: 8px 8px 0 var(--cp-white);
+    }
+  }
+}

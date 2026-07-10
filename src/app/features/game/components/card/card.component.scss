@@ -1,0 +1,150 @@
+:host {
+  display: block;
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  outline: none;
+  perspective: 900px;
+  box-shadow: var(--cp-shadow-sm);
+  transition: transform var(--cp-t-fast), box-shadow var(--cp-t-fast);
+  animation: card-in 0.4s var(--cp-ease-brutal) both;
+}
+
+:host(:focus-visible) {
+  box-shadow: 0 0 0 3px var(--cp-accent);
+}
+
+// Hover lift only while the card is still face-down.
+:host(:not(.is-flipped):not(.is-matched):hover) {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 var(--cp-accent);
+}
+
+:host(.is-matched) {
+  cursor: default;
+  animation: match-pop 0.45s var(--cp-ease-brutal);
+}
+
+:host(.is-wrong) {
+  animation: wrong-shake 0.4s var(--cp-ease-brutal);
+}
+
+:host(.is-wrong) .flip__face--back {
+  background-color: var(--cp-danger);
+  color: var(--cp-white);
+  border-color: #7a1616;
+}
+
+.flip {
+  width: 100%;
+  height: 100%;
+}
+
+.flip__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform var(--cp-t-flip) var(--cp-ease-flip);
+}
+
+:host(.is-flipped) .flip__inner {
+  transform: rotateY(180deg);
+}
+
+.flip__face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flip__face--front {
+  background-color: var(--cp-surface-2);
+  border: 2px solid var(--cp-line-soft);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 12px,
+    rgba(143, 201, 58, 0.06) 12px,
+    rgba(143, 201, 58, 0.06) 13px
+  );
+}
+
+.flip__mark {
+  font-family: var(--cp-mono);
+  font-weight: 800;
+  font-size: clamp(1rem, 4vw, 1.6rem);
+  color: rgba(143, 201, 58, 0.35);
+  letter-spacing: -0.05em;
+}
+
+.flip__face--back {
+  background-color: var(--cp-accent);
+  color: var(--cp-accent-ink);
+  transform: rotateY(180deg);
+  border: 2px solid var(--cp-accent-ink);
+}
+
+:host(.is-matched) .flip__face--back {
+  background-color: var(--cp-ground);
+  color: var(--cp-accent);
+  border-color: var(--cp-accent);
+}
+
+.flip__glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 62%;
+  height: 62%;
+}
+
+.flip__glyph ::ng-deep svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes match-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes wrong-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}

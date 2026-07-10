@@ -1,0 +1,67 @@
+<div class="overlay" @overlay>
+  @if (won()) {
+    <cp-confetti-canvas />
+  }
+
+  <div
+    class="panel"
+    [class.panel--lost]="!won()"
+    @panel
+    role="dialog"
+    aria-modal="true"
+  >
+    <p class="panel__eyebrow">
+      {{ won() ? 'Sequence Matched' : 'Stack Overflow' }}
+    </p>
+    <h1 class="panel__title">{{ won() ? 'YOU WIN' : 'GAME OVER' }}</h1>
+
+    @if (won()) {
+      <div
+        class="rank"
+        [class.rank--show]="showRank()"
+        [attr.data-grade]="summary().rank"
+      >
+        <span class="rank__label">Rank</span>
+        <span class="rank__grade">{{ summary().rank }}</span>
+      </div>
+    }
+
+    <dl class="tally">
+      <div class="tally__row">
+        <dt>Score</dt>
+        <dd class="tally__score">{{ displayScore() }}</dd>
+      </div>
+      <div class="tally__row">
+        <dt>Time</dt>
+        <dd>{{ displayTime() }}</dd>
+      </div>
+      <div class="tally__row">
+        <dt>Moves</dt>
+        <dd>{{ displayMoves() }}</dd>
+      </div>
+      <div class="tally__row">
+        <dt>Accuracy</dt>
+        <dd>{{ displayAccuracy() }}</dd>
+      </div>
+      <div class="tally__row">
+        <dt>Best Combo</dt>
+        <dd>×{{ summary().bestCombo }}</dd>
+      </div>
+    </dl>
+
+    @if (won() && summary().isNewBest) {
+      <p class="panel__best panel__best--new">★ NEW BEST!</p>
+    } @else if (bestTime()) {
+      <p class="panel__best">Best time · {{ bestTime() }}</p>
+    }
+
+    <div class="panel__actions">
+      <button class="cp-btn cp-btn--accent" (click)="playAgain.emit()">
+        Play Again
+      </button>
+      <button class="cp-btn" (click)="changeDifficulty.emit()">
+        Change Level
+      </button>
+    </div>
+  </div>
+</div>

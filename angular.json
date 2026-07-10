@@ -10,13 +10,10 @@
           "skipTests": true
         },
         "@schematics/angular:component": {
-          "skipTests": true,
-          "standalone": false
+          "style": "scss",
+          "changeDetection": "OnPush"
         },
-        "@schematics/angular:directive": {
-          "skipTests": true,
-          "standalone": false
-        },
+        "@schematics/angular:directive": {},
         "@schematics/angular:guard": {
           "skipTests": true
         },
@@ -24,8 +21,7 @@
           "skipTests": true
         },
         "@schematics/angular:pipe": {
-          "skipTests": true,
-          "standalone": false
+          "skipTests": true
         },
         "@schematics/angular:resolver": {
           "skipTests": true
@@ -58,8 +54,7 @@
                 }
             ],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.css"
+              "src/styles/styles.scss"
             ],
             "scripts": []
           },
@@ -112,13 +107,15 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
+              "src/favicon.ico",
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "src/assets",
+                "output": "assets"
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles/styles.scss"
             ],
             "scripts": []
           }

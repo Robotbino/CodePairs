@@ -1,0 +1,46 @@
+.stage {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--cp-space-4);
+}
+
+.board-shell {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  border: var(--cp-border-accent);
+  box-shadow: var(--cp-shadow-lg);
+  background: var(--cp-ground);
+  overflow: hidden;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), 1fr);
+  gap: 10px;
+  padding: var(--cp-space-3);
+  background-color: var(--cp-surface);
+  transition: opacity var(--cp-t-fast);
+}
+
+.board.is-locked {
+  // Subtle cue that input is paused during comparison.
+  cursor: progress;
+}
+
+.board-footer {
+  display: flex;
+  gap: var(--cp-space-2);
+  padding: var(--cp-space-3);
+  background: var(--cp-ground);
+  border-top: 2px solid var(--cp-line);
+
+  .cp-btn {
+    flex: 1;
+    padding: 12px 16px;
+  }
+}

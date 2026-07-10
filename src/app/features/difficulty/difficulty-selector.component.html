@@ -1,0 +1,22 @@
+<main class="picker">
+  <header class="picker__head">
+    <a class="picker__back" routerLink="/">← Back</a>
+    <h1 class="picker__title">Select Difficulty</h1>
+  </header>
+
+  <div class="levels">
+    @for (level of levels; track level.difficulty) {
+      <button
+        class="level"
+        [class]="'level--' + level.difficulty"
+        (click)="start(level.difficulty)"
+      >
+        <span class="level__name">{{ level.label }}</span>
+        <span class="level__grid">{{ level.grid }}</span>
+        <span class="level__meta">
+          {{ level.pairs }} pairs · {{ level.attempts }} lives
+        </span>
+      </button>
+    }
+  </div>
+</main>

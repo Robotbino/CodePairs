@@ -1,0 +1,33 @@
+<div class="stage">
+  <section class="board-shell" [style.--cols]="game.cols()">
+    <cp-hud
+      [score]="game.score()"
+      [elapsedMs]="game.elapsedMs()"
+      [lives]="game.lives()"
+      [maxLives]="game.maxLives()"
+      [combo]="game.combo()"
+      [multiplier]="game.multiplier()"
+    />
+
+    <div class="board" [class.is-locked]="game.isBoardLocked()">
+      @for (card of game.cards(); track card.id) {
+        <cp-card [card]="card" [wrong]="isWrong(card)" (flip)="onFlip($event)" />
+      }
+    </div>
+
+    <footer class="board-footer">
+      <button class="cp-btn" (click)="onChangeDifficulty()">Quit</button>
+      <button class="cp-btn cp-btn--accent" (click)="onPlayAgain()">
+        Restart
+      </button>
+    </footer>
+
+    @if (isOver() && summary(); as s) {
+      <cp-results
+        [summary]="s"
+        (playAgain)="onPlayAgain()"
+        (changeDifficulty)="onChangeDifficulty()"
+      />
+    }
+  </section>
+</div>

@@ -1,0 +1,30 @@
+<main class="home">
+  <div class="hero">
+    <p class="hero__eyebrow">Memory Card Game</p>
+    <h1 class="hero__title">CODE<span>PAIRS</span></h1>
+    <p class="hero__subtitle">Match the tokens. Mind the leak.</p>
+
+    <a class="cp-btn cp-btn--accent hero__cta" routerLink="/difficulty">
+      Play
+    </a>
+  </div>
+
+  <section class="scores" aria-label="Best scores">
+    <h2 class="scores__heading">High Scores</h2>
+    <ul class="scores__list">
+      @for (row of bestRows; track row.difficulty) {
+        <li class="scores__row">
+          <span class="scores__level">{{ row.label }}</span>
+          @if (best(row.difficulty); as b) {
+            <span class="scores__stat">
+              <b>{{ b.score }}</b> · {{ b.time }} ·
+              <span class="scores__rank">{{ b.rank }}</span>
+            </span>
+          } @else {
+            <span class="scores__stat scores__stat--empty">— not played —</span>
+          }
+        </li>
+      }
+    </ul>
+  </section>
+</main>

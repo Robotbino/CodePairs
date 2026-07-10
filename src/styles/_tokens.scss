@@ -1,0 +1,59 @@
+// ── Code Pairs design tokens ──────────────────────────────────────────────
+// The brutalist identity lives here as CSS custom properties so every
+// component consumes the same palette / shadows / type scale, and the theme
+// can be retuned in one place.
+
+:root {
+  // Core palette
+  --cp-ground: #1a1a1a;
+  --cp-ground-deep: #141414;
+  --cp-surface: #2a2a2a;
+  --cp-surface-2: #1e1e1e;
+  --cp-line: #333333;
+  --cp-line-soft: #383838;
+
+  --cp-accent: #8fc93a;
+  --cp-accent-ink: #0f1607;
+  --cp-white: #ffffff;
+  --cp-muted: #9a9a9a;
+
+  --cp-danger: #ff5252;
+  --cp-warn: #ffb703;
+  --cp-cool: #4cc9f0;
+  --cp-hot: #ff4d9d;
+
+  // Rank colors
+  --cp-rank-s: #ffd23f;
+  --cp-rank-a: #8fc93a;
+  --cp-rank-b: #4cc9f0;
+  --cp-rank-c: #9a9a9a;
+
+  // Hard offset shadows (no blur — brutalist)
+  --cp-shadow-sm: 4px 4px 0 var(--cp-ground-deep);
+  --cp-shadow-md: 8px 8px 0 var(--cp-accent);
+  --cp-shadow-lg: 12px 12px 0 var(--cp-accent);
+  --cp-shadow-white: 8px 8px 0 var(--cp-white);
+
+  // Borders
+  --cp-border: 2px solid var(--cp-line);
+  --cp-border-accent: 3px solid var(--cp-accent);
+
+  // Spacing scale
+  --cp-space-1: 4px;
+  --cp-space-2: 8px;
+  --cp-space-3: 14px;
+  --cp-space-4: 20px;
+  --cp-space-5: 32px;
+  --cp-space-6: 48px;
+
+  // Type
+  --cp-font: "Segoe UI", "Inter", system-ui, -apple-system, sans-serif;
+  --cp-mono: "JetBrains Mono", "Fira Code", ui-monospace, "Cascadia Code",
+    Consolas, monospace;
+
+  // Motion
+  --cp-ease-brutal: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --cp-ease-flip: cubic-bezier(0.4, 0, 0.2, 1);
+  --cp-t-fast: 0.08s;
+  --cp-t-flip: 0.55s;
+}
