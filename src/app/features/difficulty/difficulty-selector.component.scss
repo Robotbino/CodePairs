@@ -11,15 +11,13 @@
 }
 
 .picker__head {
-  position: relative;
   text-align: center;
 }
 
 .picker__back {
   position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  top: var(--cp-space-4);
+  left: var(--cp-space-4);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.1em;
