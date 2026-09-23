@@ -279,7 +279,7 @@ npm run build     # output: dist/code-pairs/browser
 ```
 
 - Set the **publish directory** to `dist/code-pairs/browser`.
-- It's a single-page app. So that deep links such as `/play` survive a refresh, add a fallback rewrite: in Netlify, a `public/_redirects` file containing `/*  /index.html  200`.
+- It's a single-page app, so deep links such as `/play` need a fallback rewrite to survive a refresh. [`public/_redirects`](public/_redirects) (`/*  /index.html  200`) is copied into the build output, so Netlify serves `index.html` for every path.
 - Production builds inline the Google Fonts stylesheet, so the build machine needs network access. Alternatively, set `optimization.fonts` to `false` in `angular.json`.
 
 ## 📦 Tech stack

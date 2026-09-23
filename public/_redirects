@@ -1,0 +1,3 @@
+# Single-page app: let Angular handle every path, so deep links such as
+# /play or /difficulty survive a refresh instead of returning a 404.
+/*    /index.html    200
