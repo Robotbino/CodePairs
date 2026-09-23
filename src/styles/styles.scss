@@ -9,79 +9,329 @@
   padding: 0;
 }
 
+html {
+  // Kills double-tap-to-zoom (which can swallow a quick second tap) while
+  // keeping pinch-zoom.
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
 html,
 body {
   height: 100%;
 }
 
 body {
-  background-color: var(--cp-ground);
-  color: var(--cp-white);
+  background-color: var(--cp-paper);
+  color: var(--cp-ink);
   font-family: var(--cp-font);
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
 
-button {
-  font-family: inherit;
-  cursor: pointer;
-}
-
-// Faint scanline texture on the page ground for a "terminal" brutalist feel.
+// Printed dot grid on the paper ground.
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background-image: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 3px,
-    rgba(255, 255, 255, 0.012) 3px,
-    rgba(255, 255, 255, 0.012) 4px
-  );
+  background: radial-gradient(
+      circle at 1px 1px,
+      var(--cp-dot) 1.2px,
+      transparent 1.7px
+    )
+    0 0 / 22px 22px;
 }
 
-// Shared brutalist button used across feature screens.
+::selection {
+  background: var(--cp-highlight);
+  color: var(--cp-ink);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+// ── Button ────────────────────────────────────────────────────────────────
+// The .cp-btn element is the hit box and never moves; only the inner
+// .cp-btn__face travels (lifting on hover, landing on its ink slab when
+// pressed). A moving hit box drops clicks that start near an edge, because
+// the release lands outside the element.
+//
+//   <button class="cp-btn"><span class="cp-btn__face">Label</span></button>
 .cp-btn {
+  --d: var(--cp-depth-sm);
+  --face: var(--cp-surface);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  border-radius: var(--cp-radius-md);
+  background: none;
+  color: var(--cp-ink);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  touch-action: manipulation;
+
+  // Static ink slab the face sits on.
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--cp-ink);
+    transform: translate(var(--d), var(--d));
+  }
+
+  // Invisible hit extender covering the lifted face's overhang.
+  &::after {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--cp-lift) - 1px);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.cp-btn__face {
+  flex: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--cp-space-2);
-  padding: 16px 28px;
-  border: 3px solid var(--cp-white);
-  border-radius: 0;
-  background: transparent;
-  color: var(--cp-white);
-  font-weight: 900;
-  font-size: 0.85rem;
+  min-height: 48px;
+  padding: 12px 24px;
+  border: var(--cp-border);
+  border-radius: inherit;
+  background: var(--face);
+  color: var(--cp-ink);
+  font: 800 0.9rem/1 var(--cp-font);
+  font-stretch: var(--cp-stretch-ui);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  pointer-events: none;
+  transition: transform var(--cp-t-release) var(--cp-ease-snap),
+    background-color var(--cp-t-hover);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cp-btn:hover .cp-btn__face {
+    transform: translate(
+      calc(-1 * var(--cp-lift)),
+      calc(-1 * var(--cp-lift))
+    );
+  }
+}
+
+// Declared after the hover block: same specificity, so press wins.
+.cp-btn:active .cp-btn__face,
+.cp-btn.is-pending .cp-btn__face {
+  transform: translate(var(--d), var(--d));
+  transition: transform var(--cp-t-press) linear,
+    background-color var(--cp-t-hover);
+}
+
+.cp-btn:focus-visible .cp-btn__face {
+  outline: 3px solid var(--cp-focus);
+  outline-offset: 3px;
+}
+
+.cp-btn--primary {
+  --face: var(--cp-primary);
+}
+
+.cp-btn--sm {
+  --d: 3px;
+
+  .cp-btn__face {
+    min-height: 40px;
+    padding: 8px 14px;
+    font-size: 0.78rem;
+  }
+}
+
+.cp-btn--lg {
+  --d: var(--cp-depth-md);
+
+  .cp-btn__face {
+    min-height: 56px;
+    padding: 16px 56px;
+    font-size: 1.05rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+  }
+}
+
+.cp-btn--tile {
+  --d: var(--cp-depth-md);
+  border-radius: var(--cp-radius-lg);
+
+  .cp-btn__face {
+    justify-content: stretch;
+    padding: 18px 20px;
+    text-align: left;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+}
+
+.cp-btn--block {
+  display: flex;
+  width: 100%;
+}
+
+// ── Chip (sticker) ────────────────────────────────────────────────────────
+.cp-chip {
+  --chip: var(--cp-sky);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border: var(--cp-border-thin);
+  border-radius: var(--cp-radius-pill);
+  background: var(--chip);
+  box-shadow: var(--cp-shadow-xs);
+  color: var(--cp-ink);
+  font: 800 0.68rem/1.2 var(--cp-font);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  text-decoration: none;
-  box-shadow: var(--cp-shadow-sm);
-  transition: transform var(--cp-t-fast), box-shadow var(--cp-t-fast),
-    background-color var(--cp-t-fast), color var(--cp-t-fast);
+  rotate: var(--tilt, -3deg);
 
-  &:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0 var(--cp-accent);
+  &--pink {
+    --chip: var(--cp-pink);
   }
-
-  &:active {
-    transform: translate(4px, 4px);
-    box-shadow: none;
+  &--mint {
+    --chip: var(--cp-mint);
   }
+  &--tomato {
+    --chip: var(--cp-tomato);
+  }
+  &--sun {
+    --chip: var(--cp-sun);
+  }
+}
 
-  &--accent {
-    border-color: var(--cp-accent);
-    background: var(--cp-accent);
-    color: var(--cp-accent-ink);
-    box-shadow: 6px 6px 0 var(--cp-ground-deep);
+// ── Shared keyframes ──────────────────────────────────────────────────────
+// Global (not component-scoped) so every component can use them without
+// duplicating CSS. They animate the individual translate / scale / rotate
+// properties, so they compose with an element's transform instead of
+// replacing it, and a missing `to` lands on the element's own value.
+@keyframes card-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+    scale: 0.92;
+  }
+}
 
-    &:hover {
-      box-shadow: 8px 8px 0 var(--cp-white);
-    }
+@keyframes wrong-shake {
+  20% {
+    translate: -6px 0;
+  }
+  40% {
+    translate: 6px 0;
+  }
+  60% {
+    translate: -4px 0;
+  }
+  80% {
+    translate: 4px 0;
+  }
+}
+
+@keyframes match-pop {
+  40% {
+    scale: 1.07;
+  }
+}
+
+@keyframes sticker-in {
+  from {
+    scale: 0;
+  }
+  70% {
+    scale: 1.15;
+  }
+}
+
+@keyframes wiggle {
+  33% {
+    rotate: -2deg;
+  }
+  66% {
+    rotate: 5deg;
+  }
+}
+
+@keyframes rank-stamp {
+  from {
+    opacity: 0;
+    scale: 1.8;
+    rotate: -18deg;
+  }
+  60% {
+    opacity: 1;
+    scale: 0.92;
+    rotate: -4deg;
+  }
+}
+
+@keyframes combo-pop {
+  from {
+    opacity: 0.4;
+    scale: 0.7;
+  }
+  60% {
+    scale: 1.15;
+  }
+}
+
+@keyframes pip-break {
+  from {
+    scale: 1.35;
+    background-color: var(--cp-danger);
+  }
+  60% {
+    scale: 0.8;
+  }
+}
+
+// ── Reduced motion ────────────────────────────────────────────────────────
+// Movement is dropped; colour and opacity state changes still happen.
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0s !important;
   }
 }

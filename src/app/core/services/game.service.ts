@@ -11,9 +11,9 @@ import {
   GameSummary,
   gradeRank,
 } from '../models/game.models';
+import { MISMATCH_HIDE_MS } from '../models/timing';
 import { ScoreboardService } from './scoreboard.service';
 
-const MISMATCH_HIDE_MS = 900;
 const TIMER_TICK_MS = 100;
 
 /**
@@ -42,6 +42,7 @@ export class GameService {
   private readonly _elapsedMs = signal(0);
   private readonly _wrongIds = signal<readonly number[]>([]);
   private readonly _summary = signal<GameSummary | null>(null);
+  private readonly _announcement = signal('');
 
   // ── Public projections ──────────────────────────────────────────────────
   readonly cards = this._cards.asReadonly();
@@ -57,6 +58,8 @@ export class GameService {
   readonly wrongIds = this._wrongIds.asReadonly();
   readonly isBoardLocked = this._lockBoard.asReadonly();
   readonly summary = this._summary.asReadonly();
+  /** Latest game event as a sentence, for a polite screen-reader live region. */
+  readonly announcement = this._announcement.asReadonly();
 
   readonly config = computed(() => DIFFICULTY_CONFIG[this._difficulty()]);
   readonly pairsTotal = computed(() => this.config().pairs);
@@ -79,6 +82,11 @@ export class GameService {
   private timerId: ReturnType<typeof setInterval> | null = null;
   private startedAt = 0;
   private pendingTimeouts = new Set<ReturnType<typeof setTimeout>>();
+  /**
+   * Running card id. Ids never repeat across deals, so a restart builds fresh
+   * card components instead of reusing (and visibly flipping back) old ones.
+   */
+  private idSeq = 0;
 
   constructor() {
     this.destroyRef.onDestroy(() => this.teardown());
@@ -107,6 +115,7 @@ export class GameService {
     this._elapsedMs.set(0);
     this._wrongIds.set([]);
     this._summary.set(null);
+    this._announcement.set('');
     this._phase.set('playing');
   }
 
@@ -116,21 +125,42 @@ export class GameService {
   }
 
   /**
+   * Leave the board mid-game (e.g. Quit): stop the clock and pending reveals
+   * so nothing keeps ticking off-screen. Finished games are left untouched.
+   */
+  abandon(): void {
+    this.teardown();
+    if (this._phase() === 'playing') {
+      this._phase.set('idle');
+    }
+  }
+
+  /**
    * Attempt to flip a card. Guards make illegal clicks (locked board, already
    * revealed card, finished game) inert, so no comparison can be corrupted.
+   * The card is re-read from live state, so a stale snapshot from a rapid
+   * repeat event can never flip (and self-match) the same card twice.
    */
   flip(card: Card): void {
     if (this._phase() !== 'playing') return;
     if (this._lockBoard()) return;
-    if (card.status !== 'hidden') return;
+    const live = this._cards().find((c) => c.id === card.id);
+    if (!live || live.status !== 'hidden') return;
+    if (this._flippedIds().includes(live.id)) return;
 
     if (this._flippedIds().length === 0 && this.timerId === null) {
       this.startTimer();
     }
 
-    this.setStatus(card.id, 'flipped');
-    const flipped = [...this._flippedIds(), card.id];
+    this.setStatus(live.id, 'flipped');
+    const flipped = [...this._flippedIds(), live.id];
     this._flippedIds.set(flipped);
+
+    // Name the first card of a pair so screen-reader users can pick the
+    // second with it in mind; the match / no-match sentence replaces it.
+    if (flipped.length === 1) {
+      this._announcement.set(`${live.label}.`);
+    }
 
     if (flipped.length === 2) {
       this._lockBoard.set(true);
@@ -150,13 +180,13 @@ export class GameService {
     }
 
     if (first.pairKey === second.pairKey) {
-      this.onMatch(firstId, secondId);
+      this.onMatch(first, second);
     } else {
-      this.onMismatch(firstId, secondId);
+      this.onMismatch(first, second);
     }
   }
 
-  private onMatch(firstId: number, secondId: number): void {
+  private onMatch(first: Card, second: Card): void {
     const streak = this._combo() + 1;
     this._combo.set(streak);
     this._bestCombo.update((b) => Math.max(b, streak));
@@ -164,19 +194,35 @@ export class GameService {
       (s) => s + Math.round(BASE_MATCH_POINTS * comboMultiplier(streak)),
     );
     this._matches.update((m) => m + 1);
-    this.setStatus(firstId, 'matched');
-    this.setStatus(secondId, 'matched');
+    this.setStatus(first.id, 'matched');
+    this.setStatus(second.id, 'matched');
     this._flippedIds.set([]);
     this._lockBoard.set(false);
+
+    const combo =
+      streak >= 2 ? ` Combo ${comboMultiplier(streak)} times.` : '';
+    this._announcement.set(
+      `Match: ${first.label}. ${this._matches()} of ${this.pairsTotal()} pairs found.${combo}`,
+    );
 
     if (this._matches() === this.pairsTotal()) {
       this.finish(true);
     }
   }
 
-  private onMismatch(firstId: number, secondId: number): void {
+  private onMismatch(first: Card, second: Card): void {
+    const firstId = first.id;
+    const secondId = second.id;
     this._combo.set(0);
     this._wrongIds.set([firstId, secondId]);
+
+    // Lives are charged when the pair flips back; report the count after it.
+    const livesAfter = this._attemptsLeft() - 1;
+    this._announcement.set(
+      `No match: ${first.label} and ${second.label}. ` +
+        `${livesAfter} ${livesAfter === 1 ? 'life' : 'lives'} left.`,
+    );
+
     this.schedule(() => {
       this._wrongIds.set([]);
       this.setStatus(firstId, 'hidden');
@@ -205,6 +251,11 @@ export class GameService {
 
     this._phase.set(won ? 'won' : 'lost');
     this._summary.set(this.buildSummary(won));
+    this._announcement.set(
+      won
+        ? `All pairs found. You win with ${this._score()} points.`
+        : 'Out of lives. Game over.',
+    );
   }
 
   private buildSummary(won: boolean): GameSummary {
@@ -247,11 +298,11 @@ export class GameService {
   private buildDeck(pairCount: number): Card[] {
     const chosen = this.pickTokens(pairCount);
     const cards: Card[] = [];
-    chosen.forEach((token, index) => {
+    chosen.forEach((token) => {
       const svg = this.sanitizer.bypassSecurityTrustHtml(token.svg);
       for (let copy = 0; copy < 2; copy++) {
         cards.push({
-          id: index * 2 + copy,
+          id: this.idSeq++,
           pairKey: token.pairKey,
           label: token.label,
           svg,

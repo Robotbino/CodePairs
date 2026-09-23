@@ -1,8 +1,8 @@
 .hud {
-  display: flex;
-  align-items: stretch;
-  background-color: var(--cp-ground);
-  border-bottom: 2px solid var(--cp-line);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  height: var(--cp-hud-h);
+  border-bottom: var(--cp-border);
 }
 
 .hud__stat {
@@ -10,95 +10,125 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  flex: 1;
-  padding: 12px 8px;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px 6px;
 
   & + & {
-    border-left: 2px solid var(--cp-line);
+    border-left: var(--cp-border);
   }
 }
 
 .hud__label {
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--cp-accent);
-  opacity: 0.7;
+  color: var(--cp-muted);
 }
 
 .hud__value {
+  color: var(--cp-ink);
   font-weight: 900;
-  color: var(--cp-white);
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .hud__value--score {
-  font-size: 1.6rem;
+  font-family: var(--cp-font-display);
+  font-size: 1.5rem;
+  font-stretch: var(--cp-stretch-ui);
 }
 
 .hud__value--time {
   font-family: var(--cp-mono);
-  font-size: 1.2rem;
+  font-size: 1.15rem;
+  font-weight: 700;
 }
 
 .hud__value--idle {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   color: var(--cp-muted);
 }
 
+// Pips wrap onto a second row when the tile is narrow (8 lives on a phone).
 .hud__pips {
   display: flex;
-  gap: 5px;
-  align-items: center;
-  height: 1.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  max-width: 100%;
 }
 
 .hud__pip {
   width: 12px;
   height: 12px;
-  background-color: var(--cp-danger);
-  box-shadow: 2px 2px 0 var(--cp-ground-deep);
+  background: var(--cp-danger);
+  border: var(--cp-border-thin);
+  border-radius: var(--cp-radius-xs);
 }
 
 .hud__pip--out {
-  background-color: transparent;
-  border: 2px solid var(--cp-line-soft);
-  box-shadow: none;
+  background: transparent;
+  border-color: var(--cp-hollow);
+  animation: pip-break 360ms var(--cp-ease-out);
 }
 
 .hud__stat--combo {
-  transition: background-color var(--cp-t-fast);
+  transition: background-color var(--cp-t-hover);
 
   &.is-hot {
-    background-color: rgba(255, 210, 63, 0.08);
+    background: var(--cp-pink);
+
+    .hud__label {
+      color: var(--cp-ink);
+    }
   }
 }
 
 .hud__value--combo {
-  font-size: 1.5rem;
-  color: var(--cp-rank-s);
-  animation: combo-pop 0.3s var(--cp-ease-brutal);
+  font-family: var(--cp-font-display);
+  font-size: 1.4rem;
+  font-stretch: var(--cp-stretch-ui);
+  animation: combo-pop 300ms var(--cp-ease-snap);
 
   small {
+    margin-left: 3px;
     font-size: 0.7rem;
-    color: var(--cp-muted);
-    vertical-align: middle;
+    color: var(--cp-ink-2);
   }
 }
 
-@keyframes combo-pop {
-  0% {
-    transform: scale(0.7);
-    opacity: 0.4;
+@media (max-width: 400px) {
+  // Lives split into two even rows so they fit the fixed HUD height.
+  .hud__stat {
+    gap: 4px;
+    padding: 6px 4px;
   }
-  60% {
-    transform: scale(1.15);
+
+  .hud__pips {
+    display: grid;
+    grid-template-columns: repeat(var(--pip-cols, 4), 10px);
+    gap: 3px;
   }
-  100% {
-    transform: scale(1);
-    opacity: 1;
+
+  .hud__pip {
+    width: 10px;
+    height: 10px;
+  }
+
+  .hud__label {
+    font-size: 0.56rem;
+    letter-spacing: 0.12em;
+  }
+
+  .hud__value--score,
+  .hud__value--combo {
+    font-size: 1.2rem;
+  }
+
+  .hud__value--time {
+    font-size: 0.95rem;
   }
 }

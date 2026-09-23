@@ -2,6 +2,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { GameService } from './game.service';
 import { ScoreboardService } from './scoreboard.service';
 import { Card, DIFFICULTY_CONFIG } from '../models/game.models';
+import { MISMATCH_HIDE_MS } from '../models/timing';
 
 describe('GameService', () => {
   let game: GameService;
@@ -96,7 +97,7 @@ describe('GameService', () => {
     expect(game.isBoardLocked()).toBeTrue(); // locked during comparison
     expect(game.combo()).toBe(0);
 
-    tick(900);
+    tick(MISMATCH_HIDE_MS);
     expect(game.lives()).toBe(DIFFICULTY_CONFIG.hard.attempts - 1);
     expect(game.isBoardLocked()).toBeFalse();
     expect(game.cards().filter((c) => c.status === 'flipped').length).toBe(0);
@@ -115,7 +116,7 @@ describe('GameService', () => {
     expect(third.status).not.toBe('flipped');
     expect(game.cards().find((c) => c.id === third.id)!.status).toBe('hidden');
 
-    tick(900);
+    tick(MISMATCH_HIDE_MS);
   }));
 
   it('transitions to won when the last pair is matched', () => {
@@ -136,10 +137,79 @@ describe('GameService', () => {
       const [a, b] = firstMismatch();
       game.flip(a);
       game.flip(b);
-      tick(900);
+      tick(MISMATCH_HIDE_MS);
     }
     expect(game.phase()).toBe('lost');
     expect(game.summary()?.won).toBeFalse();
+  }));
+
+  it('ignores a stale repeat event for the same card (no self-match)', () => {
+    game.newGame('hard');
+    const card = game.cards()[0];
+    game.flip(card);
+    game.flip(card); // same stale snapshot, status still 'hidden' in it
+
+    expect(game.moves()).toBe(0);
+    expect(game.matches()).toBe(0);
+    expect(game.cards().filter((c) => c.status === 'flipped').length).toBe(1);
+  });
+
+  it('gives every deal fresh card ids', () => {
+    game.newGame('hard');
+    const first = new Set(game.cards().map((c) => c.id));
+    game.restart();
+    const second = game.cards().map((c) => c.id);
+
+    expect(second.some((id) => first.has(id))).toBeFalse();
+  });
+
+  it('abandon() stops the clock and returns to idle', fakeAsync(() => {
+    game.newGame('hard');
+    const [a, b] = firstMismatch();
+    game.flip(a); // starts the timer
+    game.flip(b); // schedules the hide
+
+    game.abandon();
+    const frozen = game.elapsedMs();
+    tick(MISMATCH_HIDE_MS + 500);
+
+    expect(game.phase()).toBe('idle');
+    expect(game.elapsedMs()).toBe(frozen);
+    expect(game.lives()).toBe(DIFFICULTY_CONFIG.hard.attempts); // hide never ran
+  }));
+
+  it('abandon() leaves a finished game untouched', () => {
+    game.newGame('easy');
+    const cards = game.cards();
+    for (const key of new Set(cards.map((c) => c.pairKey))) {
+      const [a, b] = cards.filter((c) => c.pairKey === key);
+      game.flip(a);
+      game.flip(b);
+    }
+    game.abandon();
+    expect(game.phase()).toBe('won');
+  });
+
+  it('announces the first card of a pair, then the outcome', () => {
+    game.newGame('hard');
+    const [a, b] = firstPair();
+    game.flip(a);
+    expect(game.announcement()).toBe(`${a.label}.`);
+
+    game.flip(b);
+    expect(game.announcement()).toContain(`Match: ${a.label}.`);
+  });
+
+  it('announces a mismatch with the lives that will remain', fakeAsync(() => {
+    game.newGame('hard');
+    const [a, b] = firstMismatch();
+    game.flip(a);
+    game.flip(b);
+
+    const left = DIFFICULTY_CONFIG.hard.attempts - 1;
+    expect(game.announcement()).toContain(`${left} lives left`);
+    tick(MISMATCH_HIDE_MS);
+    expect(game.lives()).toBe(left);
   }));
 
   it('computes accuracy from matches over moves', () => {

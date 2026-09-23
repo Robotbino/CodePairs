@@ -16,7 +16,7 @@ function glyph(text: string, size: number): string {
     `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" ` +
     `role="img" aria-hidden="true">` +
     `<text x="50" y="54" text-anchor="middle" dominant-baseline="central" ` +
-    `font-family="ui-monospace, 'JetBrains Mono', 'Fira Code', Consolas, monospace" ` +
+    `font-family="'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace" ` +
     `font-weight="800" font-size="${size}" fill="currentColor" ` +
     `letter-spacing="-2">${text}</text></svg>`
   );

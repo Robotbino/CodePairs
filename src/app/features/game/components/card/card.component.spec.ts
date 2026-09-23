@@ -45,4 +45,27 @@ describe('CardComponent', () => {
     expect(host.classList.contains('is-flipped')).toBeTrue();
     expect(host.classList.contains('is-matched')).toBeTrue();
   });
+
+  it('labels the card by position and state without leaking face-down glyphs', () => {
+    const host: HTMLElement = fixture.nativeElement;
+    fixture.componentRef.setInput('index', 2);
+
+    fixture.componentRef.setInput('card', makeCard('hidden'));
+    fixture.detectChanges();
+    expect(host.getAttribute('aria-label')).toBe('Card 3, face down');
+    expect(host.getAttribute('aria-disabled')).toBeNull();
+
+    fixture.componentRef.setInput('card', makeCard('matched'));
+    fixture.detectChanges();
+    expect(host.getAttribute('aria-label')).toBe('Card 3, Braces, matched');
+    expect(host.getAttribute('aria-disabled')).toBe('true');
+  });
+
+  it('exposes its tone as the --tone custom property', () => {
+    fixture.componentRef.setInput('card', makeCard('flipped'));
+    fixture.componentRef.setInput('tone', 4);
+    fixture.detectChanges();
+    const host: HTMLElement = fixture.nativeElement;
+    expect(host.style.getPropertyValue('--tone')).toBe('var(--cp-tone-4)');
+  });
 });

@@ -3,15 +3,26 @@ import {
   Component,
   computed,
   DestroyRef,
+  ElementRef,
   inject,
   input,
   OnInit,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
-import { animate, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  animateChild,
+  group,
+  query,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { GameSummary } from '../../../../core/models/game.models';
 import { formatPercent, formatTime } from '../../../../core/util/format';
+import { prefersReducedMotion } from '../../../../core/util/motion';
 import { ConfettiCanvasComponent } from '../confetti-canvas/confetti-canvas.component';
 
 /** Win/lose overlay with an animated score tally and rank grade reveal. */
@@ -23,17 +34,25 @@ import { ConfettiCanvasComponent } from '../confetti-canvas/confetti-canvas.comp
   templateUrl: './results.component.html',
   styleUrl: './results.component.scss',
   animations: [
+    // The overlay drives the panel explicitly: a parent :enter otherwise
+    // swallows the child's, and the panel would never animate in.
     trigger('overlay', [
       transition(':enter', [
         style({ opacity: 0 }),
-        animate('220ms ease-out', style({ opacity: 1 })),
+        group([
+          animate('220ms ease-out', style({ opacity: 1 })),
+          query('@panel', animateChild()),
+        ]),
       ]),
     ]),
     trigger('panel', [
       transition(':enter', [
-        style({ transform: 'translateY(24px) scale(0.96)', opacity: 0 }),
+        style({
+          transform: 'translateY(24px) rotate(-1deg) scale(0.96)',
+          opacity: 0,
+        }),
         animate(
-          '320ms cubic-bezier(0.2,0.9,0.2,1)',
+          '360ms cubic-bezier(0.16, 1, 0.3, 1)',
           style({ transform: 'none', opacity: 1 }),
         ),
       ]),
@@ -42,6 +61,9 @@ import { ConfettiCanvasComponent } from '../confetti-canvas/confetti-canvas.comp
 })
 export class ResultsComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly title =
+    viewChild.required<ElementRef<HTMLElement>>('title');
+  protected readonly reduceMotion = prefersReducedMotion();
 
   readonly summary = input.required<GameSummary>();
   readonly playAgain = output<void>();
@@ -53,6 +75,8 @@ export class ResultsComponent implements OnInit {
   private readonly animMoves = signal(0);
   private readonly animAccuracy = signal(0);
   private readonly rankRevealed = signal(false);
+  /** Actions accept pointer input only once the panel has landed. */
+  protected readonly armed = signal(false);
 
   readonly displayScore = computed(() => Math.round(this.animScore()));
   readonly displayTime = computed(() => formatTime(this.animTimeMs()));
@@ -61,6 +85,19 @@ export class ResultsComponent implements OnInit {
   readonly showRank = this.rankRevealed.asReadonly();
 
   readonly won = computed(() => this.summary().won);
+  /** Final stats as one sentence, read when focus enters the dialog. */
+  readonly srSummary = computed(() => {
+    const s = this.summary();
+    const parts = [
+      `Score ${s.score}`,
+      `time ${formatTime(s.timeMs)}`,
+      `${s.moves} moves`,
+      `accuracy ${formatPercent(s.accuracy)}`,
+    ];
+    if (s.won) parts.push(`rank ${s.rank}`);
+    if (s.won && s.isNewBest) parts.push('new best score');
+    return `${parts.join(', ')}.`;
+  });
   readonly bestTime = computed(() => {
     const best = this.summary().previousBest;
     return best ? formatTime(best.timeMs) : null;
@@ -73,8 +110,9 @@ export class ResultsComponent implements OnInit {
     const s = this.summary();
     this.destroyRef.onDestroy(() => this.cleanup());
 
-    if (!s.won) {
-      // Losing screens are terse: snap the stats, no drawn-out celebration.
+    if (!s.won || this.reduceMotion) {
+      // Losing screens are terse, and reduced motion skips the count-up:
+      // snap the stats, no drawn-out celebration.
       this.animScore.set(s.score);
       this.animTimeMs.set(s.timeMs);
       this.animMoves.set(s.moves);
@@ -88,6 +126,18 @@ export class ResultsComponent implements OnInit {
     this.countUp(this.animMoves, s.moves, 700);
     this.countUp(this.animAccuracy, s.accuracy, 900);
     this.timers.push(setTimeout(() => this.rankRevealed.set(true), 1000));
+  }
+
+  /**
+   * Called when the panel's entrance finishes: enable the actions and move
+   * focus into the dialog. Focus goes to the title (top of the panel) rather
+   * than a button, so on short screens nothing scrolls out of view; Tab
+   * reaches Play again next.
+   */
+  protected arm(): void {
+    if (this.armed()) return;
+    this.armed.set(true);
+    this.title().nativeElement.focus({ preventScroll: true });
   }
 
   /**

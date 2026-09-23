@@ -9,6 +9,19 @@ export function formatTime(ms: number): string {
   return `${minutes}:${pad(seconds)}.${pad(cs)}`;
 }
 
+/**
+ * Format milliseconds as `m:ss.d` (tenths) for the live HUD clock, which
+ * ticks every 100ms — centiseconds would only flicker there.
+ */
+export function formatClock(ms: number): string {
+  const totalDs = Math.floor(ms / 100);
+  const ds = totalDs % 10;
+  const totalSeconds = Math.floor(totalDs / 10);
+  const seconds = totalSeconds % 60;
+  const minutes = Math.floor(totalSeconds / 60);
+  return `${minutes}:${seconds.toString().padStart(2, '0')}.${ds}`;
+}
+
 /** Format a 0–1 ratio as a whole-number percentage string. */
 export function formatPercent(ratio: number): string {
   return `${Math.round(ratio * 100)}%`;

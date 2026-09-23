@@ -1,42 +1,80 @@
 // ── Code Pairs design tokens ──────────────────────────────────────────────
-// The brutalist identity lives here as CSS custom properties so every
-// component consumes the same palette / shadows / type scale, and the theme
-// can be retuned in one place.
+// "Paper & Ink" neo-brutalism: cream paper, 3px ink outlines, hard ink slab
+// shadows and a small candy palette with strict roles. Every component reads
+// these custom properties, so the theme can be retuned in one place.
 
 :root {
-  // Core palette
-  --cp-ground: #1a1a1a;
-  --cp-ground-deep: #141414;
-  --cp-surface: #2a2a2a;
-  --cp-surface-2: #1e1e1e;
-  --cp-line: #333333;
-  --cp-line-soft: #383838;
+  color-scheme: light;
 
-  --cp-accent: #8fc93a;
-  --cp-accent-ink: #0f1607;
-  --cp-white: #ffffff;
-  --cp-muted: #9a9a9a;
+  // Neutrals
+  --cp-paper: #fff5e0; // page
+  --cp-paper-deep: #f6e7c8; // recessed wells (board)
+  --cp-surface: #fffdf7; // card stock: shell, HUD, panels, face-down cards
+  --cp-rule: #e7d9bd; // quiet inner dividers (decorative)
+  --cp-dot: rgba(17, 17, 17, 0.13); // body dot grid
+  --cp-mark: #c4b393; // decorative print on card backs only
+  --cp-ink: #111111; // outlines, slab shadows, main text
+  --cp-ink-2: #2e2923; // secondary text on candy fills
+  --cp-muted: #5e5548; // secondary text on paper / surface only
+  --cp-on-ink: #fff5e0; // text on ink fills
+  --cp-hollow: #8c7f69; // lost pips, disabled outlines (3:1 UI)
+  --cp-scrim: rgba(255, 245, 224, 0.86);
 
-  --cp-danger: #ff5252;
-  --cp-warn: #ffb703;
-  --cp-cool: #4cc9f0;
-  --cp-hot: #ff4d9d;
+  // Candy
+  --cp-sun: #ffd23f;
+  --cp-pink: #ff8fc6;
+  --cp-sky: #74c7ff;
+  --cp-lilac: #bda6ff;
+  --cp-mint: #8be3b0;
+  --cp-tangerine: #ffa552;
+  --cp-tomato: #ff5b4f;
 
-  // Rank colors
-  --cp-rank-s: #ffd23f;
-  --cp-rank-a: #8fc93a;
-  --cp-rank-b: #4cc9f0;
-  --cp-rank-c: #9a9a9a;
+  // Roles
+  --cp-primary: var(--cp-sun); // only Play / Play again
+  --cp-danger: var(--cp-tomato);
+  --cp-success: var(--cp-mint);
+  --cp-focus: #1f4fff;
+  --cp-highlight: var(--cp-sun);
 
-  // Hard offset shadows (no blur — brutalist)
-  --cp-shadow-sm: 4px 4px 0 var(--cp-ground-deep);
-  --cp-shadow-md: 8px 8px 0 var(--cp-accent);
-  --cp-shadow-lg: 12px 12px 0 var(--cp-accent);
-  --cp-shadow-white: 8px 8px 0 var(--cp-white);
+  --cp-rank-s: var(--cp-sun);
+  --cp-rank-a: var(--cp-pink);
+  --cp-rank-b: var(--cp-sky);
+  --cp-rank-c: #d9cfbd;
 
-  // Borders
-  --cp-border: 2px solid var(--cp-line);
-  --cp-border-accent: 3px solid var(--cp-accent);
+  // Revealed card faces: one tone per pair in the current deal.
+  --cp-tone-0: var(--cp-sun);
+  --cp-tone-1: var(--cp-pink);
+  --cp-tone-2: var(--cp-sky);
+  --cp-tone-3: var(--cp-mint);
+  --cp-tone-4: var(--cp-lilac);
+  --cp-tone-5: var(--cp-tangerine);
+
+  --cp-level-easy: var(--cp-mint);
+  --cp-level-medium: var(--cp-sky);
+  --cp-level-hard: var(--cp-pink);
+
+  // Structure
+  --cp-bw: 3px;
+  --cp-bw-thin: 2px;
+  --cp-border: var(--cp-bw) solid var(--cp-ink);
+  --cp-border-thin: var(--cp-bw-thin) solid var(--cp-ink);
+
+  --cp-radius-xs: 4px;
+  --cp-radius-sm: 6px;
+  --cp-radius-md: 10px;
+  --cp-radius-lg: 16px;
+  --cp-radius-pill: 999px;
+
+  --cp-depth-xs: 2px;
+  --cp-depth-sm: 4px;
+  --cp-depth-md: 6px;
+  --cp-depth-lg: 8px;
+  --cp-lift: 2px; // hover lift of a face, fine pointers only
+
+  --cp-shadow-xs: var(--cp-depth-xs) var(--cp-depth-xs) 0 var(--cp-ink);
+  --cp-shadow-sm: var(--cp-depth-sm) var(--cp-depth-sm) 0 var(--cp-ink);
+  --cp-shadow-md: var(--cp-depth-md) var(--cp-depth-md) 0 var(--cp-ink);
+  --cp-shadow-lg: var(--cp-depth-lg) var(--cp-depth-lg) 0 var(--cp-ink);
 
   // Spacing scale
   --cp-space-1: 4px;
@@ -46,14 +84,43 @@
   --cp-space-5: 32px;
   --cp-space-6: 48px;
 
-  // Type
-  --cp-font: "Segoe UI", "Inter", system-ui, -apple-system, sans-serif;
-  --cp-mono: "JetBrains Mono", "Fira Code", ui-monospace, "Cascadia Code",
-    Consolas, monospace;
+  // Layout. svh keeps boards clear of mobile browser toolbars.
+  --cp-vh: 100vh;
+  --cp-hud-h: 72px;
+  --cp-footer-h: 80px;
 
-  // Motion
-  --cp-ease-brutal: cubic-bezier(0.2, 0.9, 0.2, 1);
+  // Type
+  --cp-font: "Archivo", system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --cp-font-display: "Archivo", "Arial Black", "Segoe UI Black", system-ui,
+    sans-serif;
+  --cp-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", "SF Mono",
+    Consolas, monospace;
+  --cp-stretch-display: 125%;
+  --cp-stretch-ui: 110%;
+  --cp-track-label: 0.16em;
+
+  // Motion. --cp-t-flip must match FLIP_MS in core/models/timing.ts.
+  --cp-t-flip: 320ms;
+  --cp-t-press: 60ms;
+  --cp-t-release: 140ms;
+  --cp-t-hover: 120ms;
+  --cp-t-dim: 160ms;
+  --cp-ease-out: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --cp-ease-snap: cubic-bezier(0.16, 1, 0.3, 1); // expo-out: fast start, soft settle
   --cp-ease-flip: cubic-bezier(0.4, 0, 0.2, 1);
-  --cp-t-fast: 0.08s;
-  --cp-t-flip: 0.55s;
+}
+
+@supports (height: 100svh) {
+  :root {
+    --cp-vh: 100svh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --cp-t-flip: 1ms;
+    --cp-t-press: 1ms;
+    --cp-t-release: 1ms;
+  }
 }

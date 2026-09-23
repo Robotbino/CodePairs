@@ -1,106 +1,104 @@
+// The overlay scrolls on short screens; margin:auto centres the panel safely.
 .overlay {
   position: fixed;
   inset: 0;
   z-index: 100;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow-y: auto;
   padding: var(--cp-space-4);
-  background: rgba(10, 10, 10, 0.82);
-  backdrop-filter: blur(2px);
+  background: var(--cp-scrim);
 }
 
 .panel {
   position: relative;
   z-index: 3;
   width: min(400px, 100%);
-  max-height: calc(100vh - 2 * var(--cp-space-4));
-  // Stays scrollable on very short windows, but the scrollbar is never shown.
-  overflow-y: auto;
-  scrollbar-width: none;
-  padding: var(--cp-space-4);
+  margin: auto;
+  padding: 28px 24px 24px;
   text-align: center;
-  background: var(--cp-ground);
-  border: var(--cp-border-accent);
+  background: var(--cp-surface);
+  border: var(--cp-border);
+  border-radius: var(--cp-radius-lg);
   box-shadow: var(--cp-shadow-lg);
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.panel--lost {
-  border-color: var(--cp-danger);
-  box-shadow: 12px 12px 0 var(--cp-danger);
 }
 
 .panel__eyebrow {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--cp-accent);
-}
-
-.panel--lost .panel__eyebrow {
-  color: var(--cp-danger);
+  --tilt: -2deg;
 }
 
 .panel__title {
-  margin: 4px 0 var(--cp-space-3);
-  font-size: 2.2rem;
+  margin: 12px 0 var(--cp-space-2);
+  font-family: var(--cp-font-display);
+  font-size: clamp(2rem, 8vw, 2.5rem);
   font-weight: 900;
-  letter-spacing: -0.03em;
-  color: var(--cp-white);
+  font-stretch: var(--cp-stretch-display);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+
+  // Focused programmatically as the dialog's starting point; not a control.
+  &:focus {
+    outline: none;
+  }
 }
 
+// Rank stamp: hidden until the tally finishes, then slams in.
 .rank {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: var(--cp-space-3);
+  --grade: var(--cp-rank-c);
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  margin: 18px 0 var(--cp-space-4);
+  background: var(--grade);
+  border: var(--cp-border);
+  border-radius: var(--cp-radius-lg);
+  box-shadow: var(--cp-shadow-md);
+  rotate: -6deg;
   opacity: 0;
-  transform: scale(0.4) rotate(-8deg);
+
+  &[data-grade="S"] {
+    --grade: var(--cp-rank-s);
+  }
+  &[data-grade="A"] {
+    --grade: var(--cp-rank-a);
+  }
+  &[data-grade="B"] {
+    --grade: var(--cp-rank-b);
+  }
 }
 
 .rank--show {
-  animation: rank-stamp 0.5s var(--cp-ease-brutal) forwards;
+  opacity: 1;
+  animation: rank-stamp 520ms var(--cp-ease-snap);
 }
 
 .rank__label {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  translate: -50% 0;
+  padding: 3px 8px;
+  background: var(--cp-ink);
+  border-radius: var(--cp-radius-sm);
+  color: var(--cp-on-ink);
   font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.25em;
+  font-weight: 800;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--cp-muted);
 }
 
 .rank__grade {
-  font-family: var(--cp-mono);
-  font-size: 3.2rem;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.rank[data-grade='S'] .rank__grade {
-  color: var(--cp-rank-s);
-}
-.rank[data-grade='A'] .rank__grade {
-  color: var(--cp-rank-a);
-}
-.rank[data-grade='B'] .rank__grade {
-  color: var(--cp-rank-b);
-}
-.rank[data-grade='C'] .rank__grade {
-  color: var(--cp-rank-c);
+  font: 800 3.4rem/1 var(--cp-mono);
 }
 
 .tally {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-bottom: var(--cp-space-3);
-  border: 2px solid var(--cp-line);
+  margin: var(--cp-space-3) 0;
+  border: var(--cp-border);
+  border-radius: var(--cp-radius-md);
+  overflow: hidden;
+  text-align: left;
 }
 
 .tally__row {
@@ -110,60 +108,65 @@
   padding: 10px 14px;
 
   & + & {
-    border-top: 2px solid var(--cp-line);
+    border-top: 2px solid var(--cp-rule);
   }
 
   dt {
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.18em;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: var(--cp-track-label);
     text-transform: uppercase;
-    color: var(--cp-accent);
-    opacity: 0.75;
+    color: var(--cp-muted);
   }
 
   dd {
-    font-weight: 900;
     font-size: 1.1rem;
+    font-weight: 900;
     font-variant-numeric: tabular-nums;
-    color: var(--cp-white);
   }
 }
 
-.tally__score {
-  color: var(--cp-accent) !important;
-  font-size: 1.4rem !important;
+.tally__row--score dd {
+  font-size: 1.5rem;
+}
+
+// Highlighter swipe behind the final score.
+.tally__mark {
+  padding: 0 4px;
+  background: linear-gradient(
+    transparent 58%,
+    var(--cp-highlight) 58% 92%,
+    transparent 92%
+  );
 }
 
 .panel__best {
-  margin-bottom: var(--cp-space-3);
+  margin-bottom: var(--cp-space-4);
   font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
+  font-weight: 800;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--cp-muted);
 }
 
+// Sticker lands after the tally, wiggles twice and stops.
 .panel__best--new {
-  color: var(--cp-rank-s);
-  animation: blink 1s steps(2, start) infinite;
+  --tilt: 3deg;
+  color: var(--cp-ink);
+  animation: sticker-in 300ms var(--cp-ease-snap) 900ms backwards,
+    wiggle 600ms ease-in-out 1300ms 2;
 }
 
+// Actions only take pointer input once the panel has landed, so a stray tap
+// from the last move can't trigger them.
 .panel__actions {
   display: flex;
   flex-direction: column;
-  gap: var(--cp-space-2);
-}
+  gap: 14px;
+  padding-right: var(--cp-depth-sm);
+  pointer-events: none;
 
-@keyframes rank-stamp {
-  to {
-    opacity: 1;
-    transform: scale(1) rotate(0);
-  }
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0.35;
+  &.is-armed {
+    pointer-events: auto;
   }
 }

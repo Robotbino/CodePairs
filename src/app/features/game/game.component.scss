@@ -1,63 +1,89 @@
 .stage {
+  --stage-pad: clamp(12px, 4vw, var(--cp-space-4));
+
   position: relative;
   z-index: 1;
-  min-height: 100vh;
+  min-height: var(--cp-vh);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--cp-space-4);
+  padding: var(--stage-pad);
 }
 
 .board-shell {
+  --gap: clamp(8px, 2.5vw, 12px);
+  --pad: clamp(10px, 3vw, var(--cp-space-3));
+  // Widest the shell may be: viewport minus stage padding and its own slab.
+  --shell-max: min(640px, 100vw - 2 * var(--stage-pad) - var(--cp-depth-lg));
+  // Vertical space the grid can't use: stage padding, shell borders, HUD,
+  // footer, board padding and the shell's slab.
+  --chrome: calc(
+    2 * var(--stage-pad) + 2 * var(--cp-bw) + var(--cp-hud-h) +
+      var(--cp-footer-h) + 2 * var(--pad) + var(--cp-depth-lg)
+  );
+  // Card size is the smallest of what fits by width, what fits by height,
+  // and a cap so Easy doesn't produce giant tiles.
+  --card-w: calc(
+    (var(--shell-max) - 2 * var(--cp-bw) - 2 * var(--pad) -
+        (var(--cols, 4) - 1) * var(--gap)) / var(--cols, 4)
+  );
+  --card-h: calc(
+    (var(--cp-vh) - var(--chrome) - (var(--rows, 3) - 1) * var(--gap)) /
+      var(--rows, 3)
+  );
+  --card: min(var(--card-w), var(--card-h), 170px);
+
   position: relative;
   width: fit-content;
-  max-width: min(520px, 92vw);
-  border: var(--cp-border-accent);
+  min-width: min(340px, var(--shell-max));
+  max-width: var(--shell-max);
+  background: var(--cp-surface);
+  border: var(--cp-border);
+  border-radius: var(--cp-radius-lg);
   box-shadow: var(--cp-shadow-lg);
-  background: var(--cp-ground);
   overflow: hidden;
 }
 
 .board {
-  --gap: 10px;
-  // Vertical space the grid can't use: stage padding (40) + shell border (6) +
-  // HUD (~69) + footer (~77) + board padding (28), plus a little safety margin.
-  --chrome: 226px;
-  // Card size is the smaller of what fits by width and what fits by height,
-  // so the whole shell stays inside the viewport at 100% zoom.
-  --card-w: calc(
-    (min(520px, 92vw) - 2 * var(--cp-space-3) - (var(--cols, 4) - 1) * var(--gap)) /
-      var(--cols, 4)
-  );
-  --card-h: calc(
-    (100vh - var(--chrome) - (var(--rows, 3) - 1) * var(--gap)) / var(--rows, 3)
-  );
-  --card: min(var(--card-w), var(--card-h));
-
   display: grid;
   grid-template-columns: repeat(var(--cols, 4), var(--card));
   grid-auto-rows: var(--card);
   justify-content: center;
   gap: var(--gap);
-  padding: var(--cp-space-3);
-  background-color: var(--cp-surface);
-  transition: opacity var(--cp-t-fast);
+  padding: var(--pad);
+  background: var(--cp-paper-deep);
+
+  // Focused after "Play again" so keyboard users land back on the board.
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--cp-focus);
+    outline-offset: -3px;
+  }
 }
 
-.board.is-locked {
-  // Subtle cue that input is paused during comparison.
-  cursor: progress;
+// Mismatch lock: taps are ignored and face-down cards dim, while the wrong
+// pair stays vivid. (Opacity goes on the card host, never on the 3D layer.)
+.board.is-locked cp-card {
+  pointer-events: none;
+}
+
+.board.is-locked cp-card:not(.is-flipped) {
+  opacity: 0.55;
 }
 
 .board-footer {
   display: flex;
-  gap: var(--cp-space-2);
-  padding: var(--cp-space-3);
-  background: var(--cp-ground);
-  border-top: 2px solid var(--cp-line);
+  align-items: center;
+  gap: var(--cp-space-3);
+  height: var(--cp-footer-h);
+  padding: 0 calc(var(--pad) + var(--cp-depth-sm)) var(--cp-depth-sm)
+    var(--pad);
+  border-top: var(--cp-border);
 
   .cp-btn {
-    flex: 1;
-    padding: 12px 16px;
+    flex: 1 1 0;
   }
 }

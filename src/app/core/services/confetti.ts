@@ -1,5 +1,5 @@
 /**
- * A tiny, dependency-free canvas confetti system. Brutalist square/rect
+ * A tiny, dependency-free canvas confetti system. Ink-outlined rect
  * particles fall with gravity, drift and rotation. Frameworks own the <canvas>;
  * this just drives the animation loop and cleans itself up.
  */
@@ -21,7 +21,16 @@ interface Particle {
   life: number;
 }
 
-const DEFAULT_COLORS = ['#8fc93a', '#ffffff', '#ffd23f', '#4cc9f0', '#ff4d9d'];
+/** Fallback candy palette; normally the caller passes the theme tokens. */
+const DEFAULT_COLORS = [
+  '#ffd23f',
+  '#ff8fc6',
+  '#74c7ff',
+  '#bda6ff',
+  '#8be3b0',
+  '#ffa552',
+];
+const OUTLINE = '#111111';
 const GRAVITY = 0.16;
 const DRAG = 0.992;
 
@@ -32,7 +41,10 @@ export class ConfettiSystem {
   private running = false;
   private dpr = Math.min(globalThis.devicePixelRatio || 1, 2);
 
-  constructor(private canvas: HTMLCanvasElement) {
+  constructor(
+    private canvas: HTMLCanvasElement,
+    private palette: string[] = DEFAULT_COLORS,
+  ) {
     this.ctx = canvas.getContext('2d');
     this.resize();
   }
@@ -48,7 +60,7 @@ export class ConfettiSystem {
 
   /** Emit a burst from the top spread across the width. */
   burst(options: ConfettiOptions = {}): void {
-    const colors = options.colors ?? DEFAULT_COLORS;
+    const colors = options.colors ?? this.palette;
     const count = options.count ?? 120;
     const w = this.canvas.clientWidth || this.canvas.width;
 
@@ -91,6 +103,9 @@ export class ConfettiSystem {
       ctx.globalAlpha = Math.max(0, p.life);
       ctx.fillStyle = p.color;
       ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = OUTLINE;
+      ctx.strokeRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
       ctx.restore();
     }
 

@@ -4,6 +4,8 @@
     [style.--cols]="game.cols()"
     [style.--rows]="rows()"
   >
+    <h1 class="sr-only">Code Pairs, {{ game.config().label }}</h1>
+
     <cp-hud
       [score]="game.score()"
       [elapsedMs]="game.elapsedMs()"
@@ -11,25 +13,51 @@
       [maxLives]="game.maxLives()"
       [combo]="game.combo()"
       [multiplier]="game.multiplier()"
+      [attr.inert]="isOver() ? '' : null"
     />
 
-    <div class="board" [class.is-locked]="game.isBoardLocked()">
-      @for (card of game.cards(); track card.id) {
-        <cp-card [card]="card" [wrong]="isWrong(card)" (flip)="onFlip($event)" />
+    <div
+      #board
+      class="board"
+      tabindex="-1"
+      role="group"
+      aria-label="Cards"
+      [class.is-locked]="game.isBoardLocked() && !isOver()"
+      [attr.inert]="isOver() ? '' : null"
+    >
+      @for (card of game.cards(); track card.id; let i = $index) {
+        <cp-card
+          [card]="card"
+          [index]="i"
+          [tone]="toneOf(card)"
+          [wrong]="isWrong(card)"
+          [style.--i]="i"
+          (flip)="onFlip($event)"
+        />
       }
     </div>
 
-    <footer class="board-footer">
-      <button class="cp-btn" (click)="onChangeDifficulty()">Quit</button>
-      <button class="cp-btn cp-btn--accent" (click)="onPlayAgain()">
-        Restart
+    <footer class="board-footer" [attr.inert]="isOver() ? '' : null">
+      <button type="button" class="cp-btn" (click)="onChangeDifficulty()">
+        <span class="cp-btn__face">Quit</span>
+      </button>
+      <button type="button" class="cp-btn" (click)="onPlayAgain()">
+        <span class="cp-btn__face"
+          ><span aria-hidden="true">↻</span> Restart</span
+        >
       </button>
     </footer>
 
-    @if (isOver() && summary(); as s) {
+    <p class="sr-only" aria-live="polite" aria-atomic="true">
+      {{ game.announcement() }}
+    </p>
+
+    @if (resultsVisible() && summary(); as s) {
       <cp-results
+        @results
+        [@.disabled]="reduceMotion"
         [summary]="s"
-        (playAgain)="onPlayAgain()"
+        (playAgain)="onPlayAgainFromResults()"
         (changeDifficulty)="onChangeDifficulty()"
       />
     }

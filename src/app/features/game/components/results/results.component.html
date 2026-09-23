@@ -1,19 +1,28 @@
-<div class="overlay" @overlay>
+<div class="overlay" @overlay [@.disabled]="reduceMotion">
   @if (won()) {
     <cp-confetti-canvas />
   }
 
   <div
     class="panel"
-    [class.panel--lost]="!won()"
     @panel
+    (@panel.done)="arm()"
     role="dialog"
     aria-modal="true"
+    aria-labelledby="results-title"
+    aria-describedby="results-desc"
   >
-    <p class="panel__eyebrow">
-      {{ won() ? 'Sequence Matched' : 'Stack Overflow' }}
+    <p
+      class="panel__eyebrow cp-chip"
+      [class.cp-chip--mint]="won()"
+      [class.cp-chip--tomato]="!won()"
+    >
+      {{ won() ? 'Sequence matched' : 'Stack overflow' }}
     </p>
-    <h1 class="panel__title">{{ won() ? 'YOU WIN' : 'GAME OVER' }}</h1>
+    <h1 class="panel__title" id="results-title" tabindex="-1" #title>
+      {{ won() ? 'You win' : 'Game over' }}
+    </h1>
+    <p class="sr-only" id="results-desc">{{ srSummary() }}</p>
 
     @if (won()) {
       <div
@@ -27,9 +36,9 @@
     }
 
     <dl class="tally">
-      <div class="tally__row">
+      <div class="tally__row tally__row--score">
         <dt>Score</dt>
-        <dd class="tally__score">{{ displayScore() }}</dd>
+        <dd><span class="tally__mark">{{ displayScore() }}</span></dd>
       </div>
       <div class="tally__row">
         <dt>Time</dt>
@@ -44,23 +53,33 @@
         <dd>{{ displayAccuracy() }}</dd>
       </div>
       <div class="tally__row">
-        <dt>Best Combo</dt>
+        <dt>Best combo</dt>
         <dd>×{{ summary().bestCombo }}</dd>
       </div>
     </dl>
 
     @if (won() && summary().isNewBest) {
-      <p class="panel__best panel__best--new">★ NEW BEST!</p>
+      <p class="panel__best panel__best--new cp-chip cp-chip--pink">
+        <span aria-hidden="true">★</span> New best
+      </p>
     } @else if (bestTime()) {
       <p class="panel__best">Best time · {{ bestTime() }}</p>
     }
 
-    <div class="panel__actions">
-      <button class="cp-btn cp-btn--accent" (click)="playAgain.emit()">
-        Play Again
+    <div class="panel__actions" [class.is-armed]="armed()">
+      <button
+        type="button"
+        class="cp-btn cp-btn--primary cp-btn--block"
+        (click)="playAgain.emit()"
+      >
+        <span class="cp-btn__face">Play again</span>
       </button>
-      <button class="cp-btn" (click)="changeDifficulty.emit()">
-        Change Level
+      <button
+        type="button"
+        class="cp-btn cp-btn--block"
+        (click)="changeDifficulty.emit()"
+      >
+        <span class="cp-btn__face">Change level</span>
       </button>
     </div>
   </div>

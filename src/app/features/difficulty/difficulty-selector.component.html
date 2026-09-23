@@ -1,25 +1,34 @@
 <main class="picker">
-  <a class="picker__back" routerLink="/">
-    <span class="picker__back-arrow" aria-hidden="true">←</span> Back
-  </a>
+  <nav class="picker__bar">
+    <a class="cp-btn cp-btn--sm" routerLink="/">
+      <span class="cp-btn__face"><span aria-hidden="true">←</span> Back</span>
+    </a>
+  </nav>
 
-  <header class="picker__head">
-    <h1 class="picker__title">Select Difficulty</h1>
-  </header>
+  <div class="picker__body">
+    <h1 class="picker__title">Select difficulty</h1>
 
-  <div class="levels">
-    @for (level of levels; track level.difficulty) {
-      <button
-        class="level"
-        [class]="'level--' + level.difficulty"
-        (click)="start(level.difficulty)"
-      >
-        <span class="level__name">{{ level.label }}</span>
-        <span class="level__grid">{{ level.grid }}</span>
-        <span class="level__meta">
-          {{ level.pairs }} pairs · {{ level.attempts }} lives
-        </span>
-      </button>
-    }
+    <div class="levels">
+      @for (level of levels; track level.difficulty) {
+        <button
+          type="button"
+          class="cp-btn cp-btn--tile cp-btn--block"
+          [class.is-pending]="pending() === level.difficulty"
+          [style.--face]="'var(--cp-level-' + level.difficulty + ')'"
+          [attr.aria-label]="
+            level.label + ': ' + level.pairs + ' pairs, ' + level.attempts + ' lives'
+          "
+          (click)="start(level.difficulty)"
+        >
+          <span class="cp-btn__face level">
+            <span class="level__name">{{ level.label }}</span>
+            <span class="level__grid">{{ level.grid }}</span>
+            <span class="level__meta">
+              {{ level.pairs }} pairs · {{ level.attempts }} lives
+            </span>
+          </span>
+        </button>
+      }
+    </div>
   </div>
 </main>
